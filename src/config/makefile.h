@@ -1553,6 +1553,8 @@ endif
          FOPTIONS   = -m64
          COPTIONS   = -m64
        endif
+	    CC += -fpie -pie -rdynamic -pthread
+		FC += -fpie -pie -rdynamic -pthread
         COPTIONS += -Wall
         FOPTIONS   += -ffast-math #-Wunused  
         FOPTIMIZE  += -ffast-math -Wuninitialized

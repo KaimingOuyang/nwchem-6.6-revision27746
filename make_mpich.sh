@@ -25,7 +25,7 @@ export CC=gcc
 export FC=gfortran
 export F77=gfortran
 export BLASOPT="-lopenblas"
-#export ENABLE_TPI_PROFILE=1
+export ENABLE_TPI_PROFILE=1
 
 export NWBINNAME=nwchem_mpich
 
@@ -40,8 +40,9 @@ touch $NWCHEM_TOP/make.log
 #cd $NWCHEM_TOP/src/util/profile && make clean && make CDEBUG="-g -O0" FDEBUG="-g -O0" |tee -a $NWCHEM_TOP/make.log
 #cd $NWCHEM_TOP/src/util && gmake -j8 2>&1|tee -a $NWCHEM_TOP/make.log
 #make clean
-echo `pwd`
-(make -j 2 64_to_32 && make USE_64TO32=y BLAS_SIZE=4 LDOPTIONS="-pie -rdynamic -pthread" -j 2) 2>&1|tee -a $NWCHEM_TOP/make.log
+#echo `pwd`
+#(make -j 2 64_to_32 && make USE_64TO32=y BLAS_SIZE=4 CFLAGS_FORGA="-fpie -pie -rdynamic -pthread" FFLAGS_FORGA="-fpie -pie -rdynamic -pthread" LDOPTIONS="-pie -rdynamic -pthread" -j 2) 2>&1|tee -a $NWCHEM_TOP/make.log
+(make -j 2 64_to_32 && make USE_64TO32=y BLAS_SIZE=4 CFLAGS_FORGA="-fpie -pie -rdynamic -pthread" FFLAGS_FORGA="-fpie -pie -rdynamic -pthread" -j 2) 2>&1|tee -a $NWCHEM_TOP/make.log
 #make CFLAGS="-g -O0" -j 2 2>&1|tee -a $NWCHEM_TOP/make.log
 #cd $NWCHEM_TOP/src && gmake link 2>&1|tee $NWCHEM_TOP/link.log
 
