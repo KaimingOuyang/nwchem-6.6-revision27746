@@ -164,6 +164,7 @@ C#endif
       logical do_cosmo, flag
 c
       oprint_task_times = util_print('task time',print_default)
+      call ga_sync()
       task_wall = -util_wallsec()
       task_cpu  = -util_cpusec()
 *
