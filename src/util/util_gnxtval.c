@@ -1,3 +1,4 @@
+ 
 /* $Id: util_gnxtval.c 26951 2015-03-24 23:52:53Z edo $ */
 /**
  * NXTVAL Atomic Counter:
@@ -28,6 +29,12 @@ static long initval=0;
 static short int initialized=0;
 static int subscript = 0;
 
+#ifdef ENABLE_ARMCI_SET_INFO
+extern void ARMCIX_Malloc_set_info(const char* key, const char *value);
+#else
+#define ARMCIX_Malloc_set_info(key, value) do{ }while(0);
+#endif
+
 Integer util_gnxtval_(Integer *val) {
 
     if(*val > 0) {
@@ -40,13 +47,17 @@ Integer util_gnxtval_(Integer *val) {
 
        /* create task array */
        GA_Mask_sync(0, 1);
+
+       ARMCIX_Malloc_set_info("accumulate_ordering", "none");
+       ARMCIX_Malloc_set_info("disable_shm_accumulate", "true");
+       ARMCIX_Malloc_set_info("which_accumulate_ops", "sum,no_op");
        g_T = NGA_Create(C_LONG, 1, &n,"Atomic Task", NULL);
        
        /* Initialize the task array */
        if(GA_Nodeid()==0) {
-	  int lo=0, hi=0;
-	  NGA_Put (g_T, &lo, &hi, &initval, &hi);
-	  initval=0;
+    int lo=0, hi=0;
+    NGA_Put (g_T, &lo, &hi, &initval, &hi);
+    initval=0;
        }
        GA_Sync();
        return 0;
@@ -56,7 +67,3 @@ Integer util_gnxtval_(Integer *val) {
     GA_Error("nxtval: invalid value passed", 0L);
     return -1;
 }
-
-/*void nxtval_initval_(Integer *val) {
-    initval=(long) *val;
-    }*/
