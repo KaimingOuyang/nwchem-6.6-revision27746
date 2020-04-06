@@ -43,7 +43,7 @@ end
 
 tce
   freeze atomic
-  ccsd(t)
+  ccsd
   thresh 1e-6
   maxiter 100
   2eorb

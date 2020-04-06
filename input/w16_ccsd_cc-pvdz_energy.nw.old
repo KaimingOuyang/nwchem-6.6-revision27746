@@ -2,7 +2,7 @@ echo
 
 start w16_ccsd_cc-pvdz_energy
 
-memory stack 2000 mb heap 100 mb global 2000 mb noverify
+memory stack 1000 mb heap 100 mb global 1000 mb noverify
 
 permanent_dir /tmp
 scratch_dir /tmp
@@ -63,23 +63,22 @@ basis "ao basis" spherical noprint
 end
 
 scf
-  semidirect memsize 120000000 filesize 0
+  semidirect memsize 100000000 filesize 0
   singlet
   rhf
   thresh 1e-7
-  noprint "final vectors analysis"
+  tol2e 1e-14
 end
 
 tce
   freeze atomic
-  scf           
   ccsd
   thresh 1e-6
   maxiter 100
-  2eorb         
-  2emet 13      
+  2eorb
+  2emet 13
+  tilesize 28
   attilesize 40
-  tilesize 32
 end
 
 task tce energy

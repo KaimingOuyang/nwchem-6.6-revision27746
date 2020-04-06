@@ -54,7 +54,7 @@ end
 
 tce
   freeze atomic
-  ccsd(t)
+  ccsd
   thresh 1e-6
   maxiter 100
   2eorb
@@ -62,8 +62,6 @@ tce
   tilesize 20
   attilesize 40
 end
-
-set tce:nts T
 
 task tce energy
 
