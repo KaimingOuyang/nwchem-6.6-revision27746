@@ -49,7 +49,7 @@ Integer util_gnxtval_(Integer *val) {
        GA_Mask_sync(0, 1);
 
        ARMCIX_Malloc_set_info("accumulate_ordering", "none");
-       ARMCIX_Malloc_set_info("disable_shm_accumulate", "true");
+       //ARMCIX_Malloc_set_info("disable_shm_accumulate", "true");
        ARMCIX_Malloc_set_info("which_accumulate_ops", "sum,no_op");
        g_T = NGA_Create(C_LONG, 1, &n,"Atomic Task", NULL);
        
