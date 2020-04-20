@@ -1,0 +1,65 @@
+echo
+
+start Pyr_ccsd_t_aug-cc-pvdz_energy 
+
+memory stack 2000 mb heap 100 mb global 2000 mb noverify
+
+permanent_dir /tmp
+scratch_dir /tmp
+
+geometry units angstrom
+ C     -1.4239     1.2314     0.0000
+ C     -2.8224     1.2057     0.0000
+ C     -3.5102    -0.0000    -0.0000
+ C     -2.8224    -1.2057    -0.0000
+ C     -1.4239    -1.2314    -0.0000
+ C     -0.7107     0.0000    -0.0000
+ C     -0.6776    -2.4548     0.0000
+ C      0.6776    -2.4548     0.0000
+ C      1.4239    -1.2314     0.0000
+ C      0.7107    -0.0000    -0.0000
+ C      1.4239     1.2314    -0.0000
+ C      0.6776     2.4548     0.0000
+ C     -0.6776     2.4548     0.0000
+ C      2.8224    -1.2057     0.0000
+ C      3.5102     0.0000    -0.0000
+ C      2.8224     1.2057    -0.0000
+ H     -3.3672     2.1412     0.0000
+ H     -4.5922     0.0000    -0.0000
+ H     -3.3672    -2.1412    -0.0000
+ H     -1.2237    -3.3900     0.0000
+ H      1.2237    -3.3900     0.0000
+ H      1.2237     3.3900     0.0000
+ H     -1.2237     3.3900     0.0000
+ H      3.3672    -2.1412     0.0000
+ H      4.5922    -0.0000    -0.0000
+ H      3.3672     2.1412    -0.0000
+end
+
+basis "ao basis" spherical noprint
+  * library aug-cc-pvdz
+end
+
+scf
+  semidirect memsize 100000000 filesize 0
+  singlet
+  rhf
+  thresh 1e-7
+  tol2e 1e-14
+end
+
+tce
+  freeze atomic
+  ccsd
+  thresh 1e-6
+  maxiter 100
+  2eorb
+  2emet 13
+  tilesize 28
+  attilesize 40
+end
+
+set tce:nts T
+
+task tce energy
+

@@ -1,0 +1,58 @@
+echo
+
+start Nap_ccsd_t_aug-cc-pvdz_energy 
+
+memory stack 2000 mb heap 100 mb global 2000 mb noverify
+
+permanent_dir /tmp
+scratch_dir /tmp
+
+geometry units angstrom
+ symmetry d2h
+C     0.0000  1.2406  1.3971
+C     0.0000  2.4238  0.7058
+C     0.0000  2.4238  -0.7058
+C     0.0000  1.2406  -1.3971
+C     0.0000  -1.2406 -1.3971
+C     0.0000  -2.4238 -0.7058
+C     0.0000  -2.4238 0.7058
+C     0.0000  -1.2406 1.3971
+C     0.0000  0.0000  0.7140
+C     0.0000  0.0000  -0.7140
+H     0.0000  1.2389  2.4800
+H     0.0000  3.3648  1.2399
+H     0.0000  3.3648  -1.2399
+H     0.0000  1.2389  -2.4800
+H     0.0000  -1.2389 -2.4800
+H     0.0000  -3.3648 -1.2399
+H     0.0000  -3.3648 1.2399
+H     0.0000  -1.2389 2.4800
+end
+
+basis "ao basis" spherical noprint
+  * library aug-cc-pvdz
+end
+
+scf
+  semidirect memsize 100000000 filesize 0
+  singlet
+  rhf
+  thresh 1e-7
+  tol2e 1e-14
+end
+
+tce
+  freeze atomic
+  ccsd
+  thresh 1e-6
+  maxiter 100
+  2eorb
+  2emet 13
+  tilesize 25
+  attilesize 40
+end
+
+set tce:nts T
+
+task tce energy
+
