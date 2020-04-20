@@ -64,7 +64,7 @@ c
       integer iproc     ! my processor rank
       logical doit
 c
-      call ga_sync()
+      call tpi_ga_sync()
       iproc = ga_nodeid()
       call ga_distribution(g_x,iproc,ilo,ihi,irlo,irhi)
       doit = .not. (ilo.eq.0.and.ihi.eq.-1.and.
@@ -140,7 +140,7 @@ c
       call ga_release(g_x,ilo,ihi,irlo,irhi)
       endif ! doit
 c
-      call ga_sync
+      call tpi_ga_sync
 c
       return
       end

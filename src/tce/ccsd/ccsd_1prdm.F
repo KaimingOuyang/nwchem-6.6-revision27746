@@ -85,7 +85,7 @@ c     hole alpha
 c     
       do hole=1,nocc(1)
          i=2*hole-1
-         call ga_get(g_movecs(1),1,nbf,hole,hole,
+         call tpi_ga_get(g_movecs(1),1,nbf,hole,hole,
      1        dbl_mb(k_mo_h_tmp+(i-1)*nbf),nbf)
       enddo
 c     
@@ -93,7 +93,7 @@ c     hole beta
 c     
       do hole=1,nocc(ipol)
          i=2*hole
-         call ga_get(g_movecs(ipol),1,nbf,hole,hole,
+         call tpi_ga_get(g_movecs(ipol),1,nbf,hole,hole,
      1        dbl_mb(k_mo_h_tmp+(i-1)*nbf),nbf)
       enddo
 c     
@@ -119,7 +119,7 @@ c
 c
       do particle=nocc(1)+1, nmo(1)
          i=2*particle-nh-1
-         call ga_get(g_movecs(1),1,nbf,particle,particle,
+         call tpi_ga_get(g_movecs(1),1,nbf,particle,particle,
      1        dbl_mb(k_mo_p_tmp+(i-1)*nbf),nbf)
       enddo
 c     
@@ -127,7 +127,7 @@ c     particle beta
 c
       do particle=nocc(ipol)+1,nmo(ipol)
          i=2*particle-nh
-         call ga_get(g_movecs(ipol),1,nbf,particle,particle,
+         call tpi_ga_get(g_movecs(ipol),1,nbf,particle,particle,
      1        dbl_mb(k_mo_p_tmp+(i-1)*nbf),nbf)
       enddo
 c     
@@ -220,7 +220,7 @@ c<-debug
 c     
 c     do the matrix multiplication C_{\mu}^{h} Gamma_{h}^{h}
 c     
-      call dgemm('t','n',nbf,nh,nh,1.d0,dbl_mb(k_mo_h),
+      call tpi_dgemm('t','n',nbf,nh,nh,1.d0,dbl_mb(k_mo_h),
      1     nh,dbl_mb(k_rdm_mo_hh),nh,
      2     0.d0,dbl_mb(k_mu_h),nbf)
 c->debug
@@ -239,7 +239,7 @@ c<-debug
 c     
 c     do the matrxi multiplication Gamma'_{\mu}^{h} C_{h}^{\nu}
 c     
-      call dgemm('n','n',nbf,nbf,nh,1.0d0,dbl_mb(k_mu_h),nbf,
+      call tpi_dgemm('n','n',nbf,nbf,nh,1.0d0,dbl_mb(k_mu_h),nbf,
      1     dbl_mb(k_mo_h),nh,0.d0, dbl_mb(k_rdm_ao),nbf)
 c->debug
 c      if(nodezero) then
@@ -306,7 +306,7 @@ c     do the matrix multiplication
 c     
 c     C_{\mu}^{h} Gamma_{h}^{p}
 c     
-      call dgemm('t','n',nbf,np,nh,1.0d0,dbl_mb(k_mo_h),
+      call tpi_dgemm('t','n',nbf,np,nh,1.0d0,dbl_mb(k_mo_h),
      1     nh,dbl_mb(k_rdm_mo_hp),nh,
      2     0.d0,dbl_mb(k_mu_p),nbf)
 c->debug
@@ -325,7 +325,7 @@ c<-debug
 c     
 c     Gamma_{\mu}^{p} C_{p}^{\nu}
 c     
-      call dgemm('n','n',nbf,nbf,np,1.0d0,dbl_mb(k_mu_p),nbf,
+      call tpi_dgemm('n','n',nbf,nbf,np,1.0d0,dbl_mb(k_mu_p),nbf,
      1     dbl_mb(k_mo_p),np,1.0d0, dbl_mb(k_rdm_ao),nbf)
 c->debug
 c      if(nodezero) then
@@ -390,7 +390,7 @@ c
 c     
 c     do the matrix multiplication
 c     
-      call dgemm('t','n',nbf,nh,np,1.0d0,dbl_mb(k_mo_p),
+      call tpi_dgemm('t','n',nbf,nh,np,1.0d0,dbl_mb(k_mo_p),
      1     np,dbl_mb(k_rdm_mo_ph),np,
      2     0.d0,dbl_mb(k_mu_h),nbf)
 c->debug
@@ -406,7 +406,7 @@ c         enddo
 c         close(1)
 c      endif
 c<-debug
-      call dgemm('n','n',nbf,nbf,nh,1.0d0,dbl_mb(k_mu_h),nbf,
+      call tpi_dgemm('n','n',nbf,nbf,nh,1.0d0,dbl_mb(k_mu_h),nbf,
      1     dbl_mb(k_mo_h),nh,1.0d0, dbl_mb(k_rdm_ao),nbf)
 c->debug
       if(nodezero.and.util_print('densmat',print_high)) then
@@ -474,7 +474,7 @@ c<-debug
 c     
 c     do the matrix multiplication
 c     
-      call dgemm('t','n',nbf,np,np,1.0d0,dbl_mb(k_mo_p),
+      call tpi_dgemm('t','n',nbf,np,np,1.0d0,dbl_mb(k_mo_p),
      1     np,dbl_mb(k_rdm_mo_pp),np,
      2     0.d0,dbl_mb(k_mu_p),nbf)
 c->debug
@@ -490,7 +490,7 @@ c         enddo
 c         close(1)
 c      endif
 c<-debug
-      call dgemm('n','n',nbf,nbf,np,1.0d0,dbl_mb(k_mu_p),nbf,
+      call tpi_dgemm('n','n',nbf,nbf,np,1.0d0,dbl_mb(k_mu_p),nbf,
      1     dbl_mb(k_mo_p),np,1.0d0, dbl_mb(k_rdm_ao),nbf)
 c->debug
 c      if(nodezero) then

@@ -278,7 +278,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       CALL GET_HASH_BLOCK(d_a,dbl_mb(k_a),dima,int_mb(k_a_offset),(p2b_1
      & - noab - 1 + nvab * (p1b_1 - noab - 1 + nvab * (h8b_1 - 1 + noab 
      &* (h7b_1 - 1)))))
-      CALL TCE_SORT_4(dbl_mb(k_a),dbl_mb(k_a_sort),int_mb(k_range+h7b-1)
+      CALL tpi_sort_4(dbl_mb(k_a),dbl_mb(k_a_sort),int_mb(k_range+h7b-1)
      &,int_mb(k_range+h8b-1),int_mb(k_range+p1b-1),int_mb(k_range+p2b-1)
      &,4,3,2,1,1.0d0)
       IF (.not.MA_POP_STACK(l_a)) CALL ERRQUIT('ccsd2_q_left_1',3,MA_ERR
@@ -290,14 +290,14 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       CALL GET_HASH_BLOCK(d_b,dbl_mb(k_b),dimb,int_mb(k_b_offset),(p4b_2
      & - 1 + (noab+nvab) * (p3b_2 - 1 + (noab+nvab) * (h6b_2 - 1 + (noab
      &+nvab) * (h5b_2 - 1)))))
-      CALL TCE_SORT_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+h5b-1)
+      CALL tpi_sort_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+h5b-1)
      &,int_mb(k_range+h6b-1),int_mb(k_range+p3b-1),int_mb(k_range+p4b-1)
      &,4,3,2,1,1.0d0)
       IF (.not.MA_POP_STACK(l_b)) CALL ERRQUIT('ccsd2_q_left_1',6,MA_ERR
      &)
-      CALL DGEMM('T','N',dima_sort,dimb_sort,dim_common,1.0d0,dbl_mb(k_a
-     &_sort),dim_common,dbl_mb(k_b_sort),dim_common,1.0d0,dbl_mb(k_c_sor
-     &t),dima_sort)
+      CALL tpi_dgemm('T','N',dima_sort,dimb_sort,dim_common,1.0d0,
+     &dbl_mb(k_a_sort),dim_common,dbl_mb(k_b_sort),dim_common,1.0d0,
+     &dbl_mb(k_c_sort),dima_sort)
       IF (.not.MA_POP_STACK(l_b_sort)) CALL ERRQUIT('ccsd2_q_left_1',7,M
      &A_ERR)
       IF (.not.MA_POP_STACK(l_a_sort)) CALL ERRQUIT('ccsd2_q_left_1',8,M
@@ -308,7 +308,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,6,5,2,1,1.0d0)
@@ -316,7 +316,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,2,6,5,1,1.0d0)
@@ -324,7 +324,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,2,6,1,5,-1.0d0)
@@ -332,7 +332,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,6,2,5,1,-1.0d0)
@@ -340,7 +340,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,6,2,1,5,1.0d0)
@@ -348,7 +348,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h6b) .and. (t_h7b .eq. h7b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,3,8,7,2,1,6,5,1.0d0)
@@ -356,7 +356,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,6,5,2,1,1.0d0)
@@ -364,7 +364,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,2,6,5,1,1.0d0)
@@ -372,7 +372,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,2,6,1,5,-1.0d0)
@@ -380,7 +380,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,6,2,5,1,-1.0d0)
@@ -388,7 +388,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,6,2,1,5,1.0d0)
@@ -396,7 +396,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,3,7,2,1,6,5,1.0d0)
@@ -404,7 +404,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,6,5,2,1,-1.0d0)
@@ -412,7 +412,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,2,6,5,1,-1.0d0)
@@ -420,7 +420,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,2,6,1,5,1.0d0)
@@ -428,7 +428,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,6,2,5,1,1.0d0)
@@ -436,7 +436,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,6,2,1,5,-1.0d0)
@@ -444,7 +444,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h6b)
      & .and. (t_h8b .eq. h8b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,3,7,2,1,6,5,-1.0d0)
@@ -452,7 +452,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,6,5,2,1,-1.0d0)
@@ -460,7 +460,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,2,6,5,1,-1.0d0)
@@ -468,7 +468,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,2,6,1,5,1.0d0)
@@ -476,7 +476,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,6,2,5,1,1.0d0)
@@ -484,7 +484,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,6,2,1,5,-1.0d0)
@@ -492,7 +492,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h5b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,4,7,3,2,1,6,5,-1.0d0)
@@ -500,7 +500,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,6,5,2,1,1.0d0)
@@ -508,7 +508,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,2,6,5,1,1.0d0)
@@ -516,7 +516,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,2,6,1,5,-1.0d0)
@@ -524,7 +524,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,6,2,5,1,-1.0d0)
@@ -532,7 +532,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,6,2,1,5,1.0d0)
@@ -540,7 +540,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h5b) .and. (t_h6b .eq. h7b) .and. (t_h7b .eq. h8b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),4,8,7,3,2,1,6,5,1.0d0)
@@ -548,7 +548,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &2b) .and. (t_p3b .eq. p3b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,6,5,2,1,1.0d0)
@@ -556,7 +556,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,2,6,5,1,1.0d0)
@@ -564,7 +564,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &1b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,2,6,1,5,-1.0d0)
@@ -572,7 +572,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p2b) .and. (t_p4b .eq. p4b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,6,2,5,1,-1.0d0)
@@ -580,7 +580,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p1b) .and. (t_p2b .eq. p
      &3b) .and. (t_p3b .eq. p4b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,6,2,1,5,1.0d0)
@@ -588,7 +588,7 @@ C     i0 ( h5 h6 h7 h8 p1 p2 p3 p4 )_yv + = 1 * P( 36 ) * y ( h7 h8 p1 p2 )_y * 
       IF ((t_h5b .eq. h7b) .and. (t_h6b .eq. h8b) .and. (t_h7b .eq. h5b)
      & .and. (t_h8b .eq. h6b) .and. (t_p1b .eq. p3b) .and. (t_p2b .eq. p
      &4b) .and. (t_p3b .eq. p1b) .and. (t_p4b .eq. p2b)) THEN
-      CALL TCE_SORTACC_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
+      CALL tpi_sortacc_8(dbl_mb(k_c_sort),a_c,int_mb(k_range+p4b-1),int_
      &mb(k_range+p3b-1),int_mb(k_range+h6b-1),int_mb(k_range+h5b-1),int_
      &mb(k_range+p2b-1),int_mb(k_range+p1b-1),int_mb(k_range+h8b-1),int_
      &mb(k_range+h7b-1),8,7,4,3,2,1,6,5,1.0d0)

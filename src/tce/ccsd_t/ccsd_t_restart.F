@@ -30,7 +30,7 @@ C
       integer k_singles,l_singles
       integer k_doubles,l_doubles
       integer size,i
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -43,7 +43,7 @@ C
 #ifdef DEBUG_PRINT
       double precision energy_debug
 #endif
-      external nxtask
+      external tpinxt,tpisynxt
       logical nodezero
 c
       node = ga_nodeid()
@@ -102,7 +102,7 @@ c     Evaluating the (T) energy
 c
 c      nprocs = GA_NNODES()
 c      count = 0
-c      next = nxtask(nprocs,1)
+c      next = tpinxt(nprocs,1)
 #ifdef DEBUG_PRINT
       energy_debug = 0.0d0
 #endif
@@ -112,7 +112,7 @@ c      next = nxtask(nprocs,1)
 
        nprocs = GA_NNODES()
        count = 0
-       next = nxtask(nprocs,1)
+       next = tpinxt(nprocs,1)
 c
        do t_p5b = t_p4b,noab+nvab
         do t_p6b = t_p5b,noab+nvab
@@ -201,7 +201,7 @@ c
             endif
             endif
             endif
-            next = nxtask(nprocs,1)
+            next = tpinxt(nprocs,1)
             endif
             count = count + 1
            enddo
@@ -212,8 +212,8 @@ c
 c
 c      Make sure all processess have finished these loops
 c
-       call ga_sync()
-       next = nxtask(-nprocs,1)
+       call tpi_ga_sync()
+       next = tpisynxt(-nprocs,1)
 c
 c      Write new starting index to RTDB
 c
@@ -255,7 +255,7 @@ c
      3                  0,RTDB_ERR)
 c
       enddo ! outer_virtual_index
-c      next = nxtask(-nprocs,1)
+c      next = tpisynxt(-nprocs,1)
 c
 c     Sum triples correction when finished
 c

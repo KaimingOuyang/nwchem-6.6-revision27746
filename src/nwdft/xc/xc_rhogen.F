@@ -304,7 +304,7 @@ c
      +                      dbl_mb(k_repdm(ipert+(ii-1)*npert)),nbf_ld,
      %                      ifirst, ilast, jfirst, jlast, Pmat,nbfia)
                        else
-                         call ga_get(g_dens(ipert+(ii-1)*npert), 
+                         call tpi_ga_get(g_dens(ipert+(ii-1)*npert), 
      %                        ifirst, ilast, jfirst, jlast, Pmat,nbfia)
                        endif
                        call endtimer(monitor_gaget)
@@ -1068,7 +1068,7 @@ c
      &                    nbf_ld,
      %                 ifirst, ilast, jfirst, jlast, Pmat,nbfia)
                   else
-                  call ga_get(g_dens(ipert+(ii-1)*npert), 
+                  call tpi_ga_get(g_dens(ipert+(ii-1)*npert), 
      %                 ifirst, ilast, jfirst, jlast, Pmat,nbfia)
                   endif
                   call endtimer(monitor_gaget)

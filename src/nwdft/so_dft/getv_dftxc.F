@@ -39,7 +39,7 @@ c
 c     check if any dft xc is present
       if (.not.xc_gotxc()) return
 c
-      call ga_sync
+      call tpi_ga_sync
 c
 c     Query the full density matrix
       call ga_inquire(g_densso(1),type,nao,nao)
@@ -89,7 +89,7 @@ c     Accumulate contribution
       call ga_dadd(1.0d0, g_v(2), 1.0d0, g_tmp(2), g_v(2))
 c
 c     == patch in the exchange-correlation potential into the fock matrix ==
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_dadd_patch( 1.d0, g_fockso(1), 1, nao, 1, nao,
      &     1.0d0, g_v(1),  1, nao, 1, nao,
      &     g_fockso(1), 1, nao, 1, nao)

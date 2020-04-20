@@ -35,7 +35,7 @@ c
       integer ip,ir,ielm
       logical oroot
 c
-      call ga_sync
+      call tpi_ga_sync
 c
       oroot = 0.eq.ga_nodeid()
 c
@@ -63,7 +63,7 @@ c
           ld(1)     = ihi(1,ip)
           ld(2)     = ihi(2,ip)
           if (oroot) then
-            call nga_get(g_array(ip),ilo,ihi(1,ip),dbl_mb(ibuf),ld)
+            call tpi_nga_get(g_array(ip),ilo,ihi(1,ip),dbl_mb(ibuf),ld)
             do ielm = 0, nsize-1
               dbl_mb(ibuf+ielm) = dbl_mb(ibuf+ielm)*scale
             enddo
@@ -85,7 +85,8 @@ c
             ld(2)     = ihi(2,ip)
             ld(3)     = ihi(3,ip)
             if (oroot) then
-              call nga_get(g_array(ip),ilo,ihi(1,ip),dbl_mb(ibuf),ld)
+              call tpi_nga_get(g_array(ip),ilo,ihi(1,ip),
+     +                         dbl_mb(ibuf),ld)
               do ielm = 0, nsize-1
                 dbl_mb(ibuf+ielm) = dbl_mb(ibuf+ielm)*scale
               enddo
@@ -97,7 +98,7 @@ c
       if (.not.MA_pop_stack(lbuf)) call errquit(
      +  'tddft_grad_print_array: failed to deallocate buffer',
      +  0,UERR)
-      call ga_sync
+      call tpi_ga_sync
 c
       end
 c

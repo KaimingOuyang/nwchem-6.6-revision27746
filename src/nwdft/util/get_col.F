@@ -8,7 +8,7 @@ c     N-by-1, and hence the leading dimension fed to GA_GET should be N.
 c
       integer g_a,n,i
       double precision vec(n,1)
-      call ga_get(g_a,1,n,i,i,vec,n)
+      call tpi_ga_get(g_a,1,n,i,i,vec,n)
       return
       end
 
@@ -22,6 +22,6 @@ c     N-by-1, and hence the leading dimension fed to GA_PUT should be N.
 c
       integer g_a,n,i
       double precision vec(n,1)
-      call ga_put(g_a,1,n,i,i,vec,n)
+      call tpi_ga_put(g_a,1,n,i,i,vec,n)
       return
       end

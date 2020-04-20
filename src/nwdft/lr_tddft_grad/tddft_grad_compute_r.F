@@ -657,7 +657,7 @@ c
             int_mb(k_den2+i+ip*(nroot+1)) = int_mb(k_dens+ip+ipol*i)
           enddo
         enddo
-        call ga_sync()
+        call tpi_ga_sync()
 cDEBUG
 c     if (tddft_grad_util_print('tddft grad r',print_debug)) then
 c       oroot = ga_nodeid().eq.0
@@ -682,7 +682,7 @@ c fock_xc.
         endif
         call fock_xc(ihdl_geom, nao, ihdl_bfao, ngxc, int_mb(k_den2),
      +               int_mb(k_gxc), Exc, ipol, .false.)
-        call ga_sync()
+        call tpi_ga_sync()
 c DEBUG
       if (tddft_grad_util_print('tddft grad r',print_debug)) then
         oroot = ga_nodeid().eq.0

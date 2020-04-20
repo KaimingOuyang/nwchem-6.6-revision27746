@@ -43,7 +43,7 @@ c
       if (.not.ma_push_get(MT_DBL,nmo,'uhf: tmp',l_x,k_x))
      $     call errquit('uhf_hdiag_scale: cannot allocate',0, MA_ERR)
 
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_inquire(g_x, gtype, vlen, nvec)
 
 c      shift = lshift + 2.0d0*omega
@@ -72,7 +72,7 @@ c      shift = lshift + 2.0d0*omega
             do ivec = 1, nvec
                do i = ga_nodeid()+1, nocc(iset), ga_nnodes()
                   ioff = (i-1)*nvir + ibase
-                  call ga_get(g_x, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_get(g_x, ioff, ioff+nvir-1, ivec, ivec,
      $                 dbl_mb(k_x),1)
                   do j=1,nvir
 c                     denominator = 2.d0 * (diag(j+nocc(iset)) - diag(i))
@@ -84,7 +84,7 @@ c     $                    + shift
 c                     dbl_mb(k_x+j-1) = dbl_mb(k_x+j-1) / denominator
                    dbl_mb(k_x+j-1)=2.0d0* dbl_mb(k_x+j-1)/denominator ! FA-03-13-14
                   end do
-                  call ga_put(g_x, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_put(g_x, ioff, ioff+nvir-1, ivec, ivec,
      $                 dbl_mb(k_x),1)
                end do
             enddo
@@ -108,7 +108,7 @@ c                     dbl_mb(k_x+j-1) = dbl_mb(k_x+j-1) / denominator
 
       if (.not. ma_pop_stack(l_x)) call errquit('uhf:pop x',0, MA_ERR)
       if (.not. ma_pop_stack(l_diag)) call errquit('uhf:pop ',0, MA_ERR)
-      call ga_sync()
+      call tpi_ga_sync()
 
       end
 
@@ -171,7 +171,7 @@ c
       if (.not.ma_push_get(MT_DBL,nmo,'uhf: x_im',l_x_im,k_x_im))
      $     call errquit('uhf_precond_damp: cannot allocate',0, MA_ERR)
 
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_inquire(g_x, gtype, vlen, nvec)
 
       gamwidth1= gamwidth       
@@ -199,9 +199,9 @@ c
             do ivec = 1, nvec
                do i = ga_nodeid()+1, nocc(iset), ga_nnodes()
                   ioff = (i-1)*nvir + ibase
-                  call ga_get(g_x   , ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_get(g_x   , ioff, ioff+nvir-1, ivec, ivec,
      $                        dbl_mb(k_x),1)
-                  call ga_get(g_x_im, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_get(g_x_im, ioff, ioff+nvir-1, ivec, ivec,
      $                        dbl_mb(k_x_im),1)
 
                   do j=1,nvir
@@ -215,9 +215,9 @@ c
                      dbl_mb(k_x   +j-1)=tmpre*factor_re+tmpim*factor_im
                      dbl_mb(k_x_im+j-1)=tmpim*factor_re-tmpre*factor_im 
                   end do ! end-loop-j
-                  call ga_put(g_x   , ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_put(g_x   , ioff, ioff+nvir-1, ivec, ivec,
      $                        dbl_mb(k_x)   ,1)
-                  call ga_put(g_x_im, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_put(g_x_im, ioff, ioff+nvir-1, ivec, ivec,
      $                        dbl_mb(k_x_im),1)
                end do
             enddo
@@ -245,7 +245,7 @@ c
       if (.not. ma_pop_stack(l_diag)) 
      &   call errquit('uhf:pop ' ,0, MA_ERR)
 
-      call ga_sync()
+      call tpi_ga_sync()
 
       end
 c++++++++++++++++++++ FA precond routines ++++++++++++++++++ END

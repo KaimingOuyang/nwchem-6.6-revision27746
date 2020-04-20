@@ -35,6 +35,8 @@ USES_BLAS =
 
 HEADERS =
 
+SUBDIRS = profile
+
 include ../../config/makefile.h
 include ../../config/makelib.h
 

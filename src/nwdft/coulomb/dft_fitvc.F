@@ -44,7 +44,7 @@ c
       double precision THRESHOLD,CD_coef_max,shmax,
      ,     Vcoul_est,ERI_est
       double precision qsym,qscale,q1,kp_max
-      integer nxtask
+      integer nxtask,tpinxt,tpisynxt
       logical dowork,doshell
       logical oprint_ioinfo,use_nxtask
       integer ipoint
@@ -56,7 +56,7 @@ c
       integer k_p,l_p,icount_d,icount_c, n_batch_done
       integer k_at,l_at,atom_c_in,atom_d_in
       logical v_nonzero
-      external nxtask
+      external nxtask,tpinxt,tpisynxt
 c
       if(dermat) call errquit(
      C     'fitvc: dermat not coded yet',0,0)
@@ -147,7 +147,7 @@ c     sort atoms list based on decreasing atomic weight
 c
       n1=0
       use_nxtask=.not.incore
-      if(use_nxtask) n1 = nxtask(nproc,1)
+      if(use_nxtask) n1 = tpinxt(nproc,1)
       icount = 0
       ipoint=1
 c
@@ -288,13 +288,13 @@ c     add extra bit to ipoint if ishd_1 is truncated
 c     ga_put only if anything ever survived the schwarz scr
                
                if(v_nonzero)
-     G              call ga_put(g_vc, 
+     G              call tpi_ga_put(g_vc, 
      B              bf_lo_d, bf_hi_d, 
      C              bf_lo_c,bf_hi_c,
      C              dbl_mb(k_p), nbf_at_d)
 
                if(use_nxtask) then
-                  n1 = nxtask(nproc,1)
+                  n1 = tpinxt(nproc,1)
                else
                   n_batch_done = n_batch_done + 1
                endif
@@ -308,7 +308,7 @@ c
 c
       if(.not.ma_chop_stack(lcd_shell))
      &     call errquit('dft_fitvc: cannot pop stack',0,0)
-      if(use_nxtask) n1 = nxtask(-nproc,1)
+      if(use_nxtask) n1 = tpisynxt(-nproc,1)
       call ga_mask_sync(.not.use_nxtask,.false.)
       call ga_symmetrize(g_vc)
       if(oprint_ioinfo) call ga_print(g_vc)
@@ -329,7 +329,7 @@ c     !!! Should modify this so that nothing is done if nmat > 1
 c     !!! Looks like g_2ceri not needed in that case
 c
       Ecoul2=0.D0
-      call ga_sync()
+      call tpi_ga_sync()
       call  ga_distribution(g_2ceri,me,ilo,ihi,jlo,jhi)
       if (ilo.gt.0) then
       call ga_access(g_2ceri, ilo, ihi, jlo, jhi, adrc, ldc)

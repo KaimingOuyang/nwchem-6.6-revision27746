@@ -51,7 +51,7 @@ c     Initialize the ROHF data structures and allocate memory
 c
       call rohf_init(rtdb)
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       if(odbug) then
          write(luout,*) 'ready to solve ...',ga_nodeid()
@@ -77,7 +77,7 @@ c
      $                             enrep)
       endif
 c
-      call ga_sync()
+      call tpi_ga_sync()
       rohf_time = rohf_time + util_cpusec()
 c
 c     Print out results

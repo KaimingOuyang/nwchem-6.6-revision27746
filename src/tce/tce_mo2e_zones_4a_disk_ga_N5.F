@@ -102,8 +102,8 @@ c
       INTEGER next
       INTEGER nprocs
       INTEGER count
-      integer nxtask
-      external nxtask
+      integer tpinxt,tpisynxt
+      external tpinxt,tpisynxt
       logical nodezero
       logical idiskl
 c
@@ -125,6 +125,9 @@ cccx      max_size_temp=100000000
 c
 c
 c
+      call tpi_start()
+      call tpi_push_name_level1("4-index")
+
       do ii=1,1000
        tot_zone(ii)=0
       enddo
@@ -163,14 +166,14 @@ cccx       call util_file_name('4aintx',.true.,.false.,filename)
       if(idiskl) then
        if(.not.parallel) 
      1      call errquit('sf only for parallel runs',1,DISK_ERR)
-       if(parallel) call ga_sync()
+       if(parallel) call tpi_ga_sync()
         if (sf_create(filename,dfloat(bytes)*dfloat(size_4af),
      1    dfloat(bytes)*dfloat(size_4af),sf_chunk,d_4af).ne.0)
      2    call errquit('4-index: sf problem',0,DISK_ERR)
 ccx        if (parallel) then
 ccx          if (sf_close(d_4af).ne.0)
 ccx     1      call errquit('createfile: sf problem',1,DISK_ERR)
-ccx          call ga_sync()
+ccx          call tpi_ga_sync()
 ccx        end if      
       else
        call createfile(filename,d_4af,size_4af)
@@ -223,7 +226,7 @@ c
 c
       nprocs = GA_NNODES()
       count = 0
-      next = NXTASK(nprocs, 1)
+      next = tpinxt(nprocs, 1)
       DO azone1 = 1,atpart      !nu
       DO azone2 = azone1,atpart !mu
       DO azone3 = 1,atpart      !sigma
@@ -263,9 +266,12 @@ c ---------------------------
      1          .ge. tol2e) then
 cccx            call dfill(work1, 0.0d0, dbl_mb(k_work1), 1)
 cccx            call dfill(work2, 0.0d0, dbl_mb(k_work2), 1)
+            call tpi_start_timer(17)
             call int_2e4c(ao_bas_han,mu,nu,ao_bas_han,rho,sigma,
      1           work2,dbl_mb(k_work2),work1,dbl_mb(k_work1))
+            call tpi_stop_timer(17)
 c
+            call tpi_start_timer(18)
             i=0
              do mu1     = 1,mu_range
              do nu1     = 1,nu_range
@@ -285,6 +291,7 @@ c (isigma1,irho1|inu1, imu1)
             enddo
             enddo
             enddo
+            call tpi_stop_timer(18)
             end if !schwarz  screening
          shift_sigma = shift_sigma + sigma_range
          enddo !sigma
@@ -306,14 +313,14 @@ c fixing offsets and sf_writing
         if (sf_wait(request).ne.0)
      1    call errquit('zones put: sf problem3',2,DISK_ERR)
       else
-        call ga_put(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
+        call tpi_ga_put(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
       end if 
 c closing l_4a file
         if (.not.ma_pop_stack(l_4a))
      1   call errquit('tcc_mo2e_4af2: l_4a',15,MA_ERR)
 c ---------------------------
-      next = NXTASK(nprocs, 1)
+      next = tpinxt(nprocs, 1)
       END IF
       count = count + 1
       ENDDO !azone4
@@ -323,16 +330,16 @@ c ---------------------------
 c
 c
 c
-       call ga_sync()
+       call tpi_ga_sync()
 c
 c
 c
-         call ga_sync()
+         call tpi_ga_sync()
 c
 c
 c
 c
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
 c
 c
       if(.not.idiskl) then
@@ -363,7 +370,7 @@ c
 c
       nprocs = GA_NNODES()
       count = 0
-      next = NXTASK(nprocs, 1)
+      next = tpinxt(nprocs, 1)
       DO g3b = 1,noa+nva   !k
       DO g4b = g3b,noa+nva !l
       DO azone1 = 1,atpart !nu
@@ -400,7 +407,7 @@ c
         if (sf_wait(request).ne.0)
      1    call errquit('zones get3: sf problem',2,DISK_ERR)
        else
-        call ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
+        call tpi_ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
        end if 
 c
@@ -411,6 +418,7 @@ c
       if(azone3.ne.azone4) then !!============azone3.ne.azone4
 c --- C_[g3][sigma]
        i = 0 
+       call tpi_start_timer(18)
        do isigma1 =  1,nalength(azone3)
        do igi3    =  1,int_mb(k_range_alpha+g3b-1)
        i = i+1
@@ -419,9 +427,10 @@ c --- C_[g3][sigma]
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c --- C_[g3][sigma]([sigma]<[rho]|[nu] [mu])
 c            zone3   zone3  zone4
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
      1 nalength(azone1)*nalength(azone2)*nalength(azone4), !n
      1 nalength(azone3), !k
@@ -437,7 +446,7 @@ c
      1          nalength(azone1)*nalength(azone2)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux1: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      & int_mb(k_range_alpha+g3b-1),nalength(azone4),
      & nalength(azone1),nalength(azone2),
      &2,1,3,4,1.0d0)
@@ -448,6 +457,7 @@ c
      1     call errquit('l_aux1',15,MA_ERR)
 c C([g4][azone4=rho])
        i = 0
+       call tpi_start_timer(18)
        do irho1   =  1,nalength(azone4)
        do igi4    =  1,int_mb(k_range_alpha+g4b-1)
        i = i+1
@@ -456,8 +466,9 @@ c C([g4][azone4=rho])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
      1 nalength(azone1)*nalength(azone2)*int_mb(k_range_alpha+g3b-1), !n
      1 nalength(azone4), !k
@@ -474,7 +485,7 @@ c  ([rho][sigma]|[nu][mu])
        size_aux=size_4a
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux2: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_4a),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_4a),dbl_mb(k_aux),
      & nalength(azone3),nalength(azone4),
      & nalength(azone1),nalength(azone2),
      &2,1,3,4,1.0d0)
@@ -482,6 +493,7 @@ ccx      if (.not.ma_pop_stack(l_aux))
 ccx     1     call errquit('l_aux2',15,MA_ERR) ! see after dgemm
 c C([g3][azone4=rho])
        i = 0
+       call tpi_start_timer(18)
        do irho1   =  1,nalength(azone4)
        do igi3    =  1,int_mb(k_range_alpha+g3b-1)
        i = i+1
@@ -490,8 +502,9 @@ c C([g3][azone4=rho])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c C([g3][azone4=rho])([rho=azone4][sigma=azone3]|[nu][mu])
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
      1 nalength(azone1)*nalength(azone2)*nalength(azone3), !n
      1 nalength(azone4), !k
@@ -510,7 +523,7 @@ c
      1          nalength(azone1)*nalength(azone2)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux1: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      & int_mb(k_range_alpha+g3b-1),nalength(azone3),
      & nalength(azone1),nalength(azone2),
      &2,1,3,4,1.0d0)
@@ -521,6 +534,7 @@ c
      1     call errquit('l_aux1',15,MA_ERR)
 c C([g4][azone3=sigma])
        i = 0
+       call tpi_start_timer(18)
        do isigma1   =  1,nalength(azone3)
        do igi4    =  1,int_mb(k_range_alpha+g4b-1)
        i = i+1
@@ -529,8 +543,9 @@ c C([g4][azone3=sigma])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c C([g4][azone3=sigma])([sigma][g3]|[azone1][azone2])
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
      1 nalength(azone1)*nalength(azone2)*int_mb(k_range_alpha+g3b-1), !n
      1 nalength(azone3), !k
@@ -547,6 +562,7 @@ c
       if(azone3.eq.azone4) then
 c --- C_[g3][sigma]
        i = 0 
+       call tpi_start_timer(18)
        do isigma1 =  1,nalength(azone3)
        do igi3    =  1,int_mb(k_range_alpha+g3b-1)
        i = i+1
@@ -555,9 +571,10 @@ c --- C_[g3][sigma]
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c --- C_[g3][sigma]([sigma]=[rho]|[nu] [mu])
 c            zone3   zone3  zone4
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
      1 nalength(azone1)*nalength(azone2)*nalength(azone4), !n
      1 nalength(azone3), !k
@@ -573,7 +590,7 @@ c
      1          nalength(azone1)*nalength(azone2)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux1: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      & int_mb(k_range_alpha+g3b-1),nalength(azone4),
      & nalength(azone1),nalength(azone2),
      &2,1,3,4,1.0d0)
@@ -584,6 +601,7 @@ c
      1     call errquit('l_aux1',15,MA_ERR)
 c C([g4][azone4=rho])
        i = 0
+       call tpi_start_timer(18)
        do irho1   =  1,nalength(azone4)
        do igi4    =  1,int_mb(k_range_alpha+g4b-1)
        i = i+1
@@ -592,8 +610,9 @@ c C([g4][azone4=rho])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       call tpi_stop_timer(18)
 c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
-      call  dgemm('N','N',
+      call  tpi_dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
      1 nalength(azone1)*nalength(azone2)*int_mb(k_range_alpha+g3b-1), !n
      1 nalength(azone4), !k
@@ -746,6 +765,7 @@ c
        if(azone1.ne.azone2) then !-----------------
 c C_([mu-azone2][g2])
         ii=0
+        call tpi_start_timer(18)
         do igi2    =  1,int_mb(k_range_alpha+g2b-1)
         do imu1    =  1,nalength(azone2)
          ii = ii+1
@@ -754,8 +774,9 @@ c C_([mu-azone2][g2])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo 
+        call tpi_stop_timer(18)
 c ([g4][g3]|[nu-azone1][mu-azone2])*C_([mu-azone2][g2])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   nalength(azone1),                                        !m
      1   int_mb(k_range_alpha+g2b-1),                             !n
@@ -772,7 +793,7 @@ c transposition ([g4][g3]|[nu-azone1][g2])=>([g4][g3]|[g2][nu-azone1])
      1 *int_mb(k_range_alpha+g2b-1)*nalength(azone1)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux2: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      &int_mb(k_range_alpha+g4b-1),int_mb(k_range_alpha+g3b-1), 
      &nalength(azone1),int_mb(k_range_alpha+g2b-1), 
      &1,2,4,3,1.0d0)
@@ -783,6 +804,7 @@ c transposition ([g4][g3]|[nu-azone1][g2])=>([g4][g3]|[g2][nu-azone1])
      1     call errquit('l_aux2',15,MA_ERR)
 c C_([nu-azone1][g1])
         ii=0
+        call tpi_start_timer(18)
         do igi1    =  1,int_mb(k_range_alpha+g1b-1)
         do inu1    =  1,nalength(azone1)
          ii = ii+1
@@ -791,8 +813,9 @@ c C_([nu-azone1][g1])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo
+        call tpi_stop_timer(18)
 c ([g4][g3]|[g2][nu-azone1])*C_([nu-azone1][g1])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   int_mb(k_range_alpha+g2b-1),                             !m
      1   int_mb(k_range_alpha+g1b-1),                             !n
@@ -812,7 +835,7 @@ c  ([g4][g3]|[azone2-mu][azone1-nu])
      1 *nalength(azone1)*nalength(azone2) 
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux2: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_2g2a),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_2g2a),dbl_mb(k_aux),
      & int_mb(k_range_alpha+g4b-1),int_mb(k_range_alpha+g3b-1),
      & nalength(azone1),nalength(azone2), 
      & 1,2,4,3,1.0d0)
@@ -820,6 +843,7 @@ ccx      if (.not.ma_pop_stack(l_aux))
 ccx     1     call errquit('l_aux2',15,MA_ERR) ! see after dgemm
 c C([azone1-nu][g2])
         ii=0
+        call tpi_start_timer(18)
         do igi2    =  1,int_mb(k_range_alpha+g2b-1)
         do inu1    =  1,nalength(azone1)
          ii = ii+1
@@ -828,8 +852,9 @@ c C([azone1-nu][g2])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo
+        call tpi_stop_timer(18)
 c ([g4][g3]|[azone2-mu][azone1-nu])*C([azone1-nu][g2])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   nalength(azone2),                                        !m
      1   int_mb(k_range_alpha+g2b-1),                             !n
@@ -849,7 +874,7 @@ c transposition ([g4][g3]|[azone2-mu][g2])=>([g4][g3]|[g2][azone2-mu])
      1 *int_mb(k_range_alpha+g2b-1)*nalength(azone2)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux2: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      &int_mb(k_range_alpha+g4b-1),int_mb(k_range_alpha+g3b-1),
      &nalength(azone2),int_mb(k_range_alpha+g2b-1),
      &1,2,4,3,1.0d0)
@@ -860,6 +885,7 @@ c transposition ([g4][g3]|[azone2-mu][g2])=>([g4][g3]|[g2][azone2-mu])
      1     call errquit('l_aux2',15,MA_ERR)
 c C([azone2-mu][g1])
         ii=0
+        call tpi_start_timer(18)
         do igi1    =  1,int_mb(k_range_alpha+g1b-1)
         do imu1    =  1,nalength(azone2)
          ii = ii+1
@@ -868,8 +894,9 @@ c C([azone2-mu][g1])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo
+        call tpi_stop_timer(18)
 c ([g4][g3]|[g2][azone2-mu])*C([azone2-mu][g1])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   int_mb(k_range_alpha+g2b-1),                             !m
      1   int_mb(k_range_alpha+g1b-1),                             !n
@@ -892,6 +919,7 @@ c
         if(azone1.eq.azone2) then
 c C_([mu-azone2][g2])
         ii=0
+        call tpi_start_timer(18)
         do igi2    =  1,int_mb(k_range_alpha+g2b-1)
         do imu1    =  1,nalength(azone2)
          ii = ii+1
@@ -900,8 +928,9 @@ c C_([mu-azone2][g2])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo 
+        call tpi_stop_timer(18)
 c ([g4][g3]|[nu-azone1][mu-azone2])*C_([mu-azone2][g2])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   nalength(azone1),                                        !m
      1   int_mb(k_range_alpha+g2b-1),                             !n
@@ -918,7 +947,7 @@ c transposition ([g4][g3]|[nu-azone1][g2])=>([g4][g3]|[g2][nu-azone1])
      1 *int_mb(k_range_alpha+g2b-1)*nalength(azone1)
        if(.not.ma_push_get(mt_dbl,size_aux,'aux',l_aux,k_aux))
      1     call errquit('tce_aux2: MA problem',0,MA_ERR)
-      CALL TCE_SORT_4KG_(dbl_mb(k_integral),dbl_mb(k_aux),
+      CALL tpi_sort_4kg_(dbl_mb(k_integral),dbl_mb(k_aux),
      &int_mb(k_range_alpha+g4b-1),int_mb(k_range_alpha+g3b-1), 
      &nalength(azone1),int_mb(k_range_alpha+g2b-1), 
      &1,2,4,3,1.0d0)
@@ -929,6 +958,7 @@ c transposition ([g4][g3]|[nu-azone1][g2])=>([g4][g3]|[g2][nu-azone1])
      1     call errquit('l_aux2',15,MA_ERR)
 c C_([nu-azone1][g1])
         ii=0
+        call tpi_start_timer(18)
         do igi1    =  1,int_mb(k_range_alpha+g1b-1)
         do inu1    =  1,nalength(azone1)
          ii = ii+1
@@ -937,8 +967,9 @@ c C_([nu-azone1][g1])
          dbl_mb(k_coeff+ii-1)=dbl_mb(k_movecs_orb+ipos1-1)
         enddo
         enddo
+        call tpi_stop_timer(18)
 c ([g4][g3]|[g2][nu-azone1])*C_([nu-azone1][g1])
-         call dgemm('N','N',
+         call tpi_dgemm('N','N',
      1   int_mb(k_range_alpha+g4b-1)*int_mb(k_range_alpha+g3b-1)*
      1   int_mb(k_range_alpha+g2b-1),                             !m
      1   int_mb(k_range_alpha+g1b-1),                             !n
@@ -985,7 +1016,7 @@ c
      1  call errquit('tcc_mo2e_trans_zones: MA problem',15,MA_ERR)
 c
 c
-      next = NXTASK(nprocs, 1)
+      next = tpinxt(nprocs, 1)
       END IF
       count = count + 1
       ENDDO !azone2
@@ -993,7 +1024,7 @@ c
       ENDDO !g4b
       ENDDO !g3b
 c
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
 c
        call reconcilefile(d_v2,size_2e)
 c
@@ -1027,13 +1058,13 @@ c
 c
       if(idiskl) then
 cccx        if (parallel) then
-cccx          call ga_sync()
+cccx          call tpi_ga_sync()
 cccx          if (sf_open(d_4af).ne.0)
 cccx     1      call errquit('deletefile: sf problem',0,DISK_ERR)
 cccx        endif
 ccx      if (.not.sf_destroy(d_4af))
 ccx     1  call errquit('tcc_sf_destroy2: sf problem',15,MA_ERR)
-        if (parallel) call ga_sync()
+        if (parallel) call tpi_ga_sync()
       else
        call deletefile(d_4af)
       end if
@@ -1043,7 +1074,10 @@ c
       if (.not.ma_pop_stack(l_4af_offset))
      1  call errquit('tcc_ao2e: MA problem',15,MA_ERR)
 c
-      call ga_sync()
+      call tpi_ga_sync()
+
+      call tpi_pop_name_level1("4-index")
+      call tpi_stop()
 c *** debug ***
 c 800  format('DGEMM1 MAX',i5,2x,3f15.5)
 c 801  format('DGEMM2 ',i5,2x,3f15.5)

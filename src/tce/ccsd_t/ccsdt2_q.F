@@ -44,7 +44,7 @@ C
       integer k_left_sorted,l_left_sorted
       integer size,i
       integer g_energy
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -62,7 +62,7 @@ C
       integer k_i1_offset_9,l_i1_offset_9
       double precision energy
       double precision factor
-      external nxtask
+      external tpinxt,tpisynxt
 c
 c     Caution! k_right & k_left are not even allocated yet
 c     but they will not be used.
@@ -88,7 +88,7 @@ c
      1  call errquit('ccsdt_q: GA problem',0,GA_ERR)
       nprocs = GA_NNODES()
       count = 0
-      next = nxtask(nprocs,1)
+      next = tpinxt(nprocs,1)
       energy=0.0d0
       do t_p5b = noab+1,noab+nvab
        do t_p6b = t_p5b,noab+nvab
@@ -157,7 +157,7 @@ c
      3          k_y2_offset,k_y3_offset,l_i1_offset_7,l_i1_offset_8,
      4          l_i1_offset_9,t_h1b,t_h2b,t_h3b,t_h4b,
      5          t_p5b,t_p6b,t_p7b,t_p8b,2)
-              call tce_sort_8(dbl_mb(k_left),dbl_mb(k_left_sorted),
+              call tpi_sort_8(dbl_mb(k_left),dbl_mb(k_left_sorted),
      1          int_mb(k_range+t_h1b-1),int_mb(k_range+t_h2b-1),
      2          int_mb(k_range+t_h3b-1),int_mb(k_range+t_h4b-1),
      3          int_mb(k_range+t_p5b-1),int_mb(k_range+t_p6b-1),
@@ -245,7 +245,7 @@ c
               endif
               endif
               endif
-              next = nxtask(nprocs,1)
+              next = tpinxt(nprocs,1)
               endif
               count = count + 1
              enddo
@@ -256,7 +256,7 @@ c
         enddo
        enddo
       enddo
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
       call ccsdt2_q_left(dbl_mb(k_left),d_f1,d_i1_7,d_i1_8,
      1  d_i1_9,d_t1,d_v2,d_y2,d_y3,k_f1_offset,k_i1_offset_7,
      2  k_i1_offset_8,k_i1_offset_9,k_t1_offset,k_v2_offset,
@@ -272,9 +272,9 @@ c
      6  l_i1_offset_5,l_i1_offset_6,t_h1b,t_h2b,t_h3b,t_h4b,
      7  t_p5b,t_p6b,t_p7b,t_p8b,3)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,energy,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,energy,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,energy,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,energy,1)
       if (.not.ga_destroy(g_energy))
      1  call errquit('ccsdt_q: GA problem',1,GA_ERR)
       return

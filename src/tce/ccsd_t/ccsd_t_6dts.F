@@ -25,7 +25,7 @@ C
       integer k_singles,l_singles
       integer k_doubles,l_doubles
       integer size,i
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -47,7 +47,7 @@ c ---------------------------------------
       double precision factor,denom
       double precision denom_p4,denom_p5,denom_p6
       double precision denom_h1,denom_h2,denom_h3
-      external nxtask
+      external tpinxt,tpisynxt
 C
 c
 c - T1/X1 LOCALIZATION ----------
@@ -57,13 +57,13 @@ c    opening l_t1_local and l_x1_local
      1      call errquit('ccsd_t: t1_local size=',size_t1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 c    copy d_t1 ==> l_t1_local
-ccx        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+ccx        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
 c -------------------------------
 C
       nprocs = GA_NNODES()
       count = 0
-      next = nxtask(nprocs,1)
+      next = tpinxt(nprocs,1)
       energy(1)=0.0d0
       energy(2)=0.0d0
       energy1 = 0.0d0
@@ -232,7 +232,7 @@ c
             if (.not.MA_POP_STACK(l_singles)) 
      1        call errquit('ccsd_t',4,MA_ERR)
 c
-            next = nxtask(nprocs,1)
+            next = tpinxt(nprocs,1)
             endif
             count = count + 1
 c
@@ -245,7 +245,7 @@ c
         enddo
        enddo
       enddo
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
       energy(1) = energy1
       energy(2) = energy2
       call ga_dgop(mt_dbl,energy,2,'+')

@@ -87,13 +87,13 @@ c
       integer istart,n1
       integer size_atblock
       integer ndone,n_batch_done
-      integer nxtask,icount,ipoint
+      integer nxtask,tpinxt,tpisynxt,icount,ipoint
       integer ishd_0,ishd_1
       integer l_at,k_at
       integer atom_c_in,atom_d_in
       logical dowork,use_nxtask,lschw_pmax1,doshell
       double precision dabsmax
-      external nxtask,dabsmax
+      external nxtask,tpinxt,tpisynxt,dabsmax
 c      
 c     Parallelize the loop over the products of AO shells.
 c      
@@ -136,7 +136,7 @@ c
       n1=0
       use_nxtask=compute.or.(.not.incore)
       n_batch=0
-      if(use_nxtask) n1 = nxtask(nproc,1)
+      if(use_nxtask) n1 = tpinxt(nproc,1)
 
       icount = 0
       ndone = 1
@@ -167,7 +167,7 @@ c     get DM atom block
         size_atblock= nbf_at_d*nbf_at_c
             do ifit = 1, nfit
 
-               call ga_get(g_dens(ifit), bf_lo_d, bf_hi_d, 
+               call tpi_ga_get(g_dens(ifit), bf_lo_d, bf_hi_d, 
      C              bf_lo_c,bf_hi_c,
      C              dbl_mb(k_p+(ifit-1)*size_atblock), 
      B              (bf_hi_d - bf_lo_d + 1))
@@ -308,7 +308,7 @@ c
         icount_c=icount_c+nshbfc
       enddo ! ishc
       if(use_nxtask) then
-         n1 = nxtask(nproc,1)
+         n1 = tpinxt(nproc,1)
       else
          n_batch_done = n_batch_done + 1
       endif
@@ -335,7 +335,7 @@ c
      &  call errquit('dft_fitcd: cannot pop stack',12, MA_ERR)
 
 c
-      if(use_nxtask) n1 = nxtask(-nproc,1)
+      if(use_nxtask) n1 = tpisynxt(-nproc,1)
       if(compute) return
       if(.not.ma_chop_stack(l_p))
      &  call errquit('dft_fitcd: cannot pop stack',12, MA_ERR)

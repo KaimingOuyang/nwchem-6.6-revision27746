@@ -80,8 +80,8 @@ C
 
       do i = 1, n1a 
          do j = 1, n2a
-            call ga_get (g_a, i, i, j, j, va, 1)
-            call ga_get (g_b, i, i, j, j, vb, 1)
+            call tpi_ga_get (g_a, i, i, j, j, va, 1)
+            call tpi_ga_get (g_b, i, i, j, j, vb, 1)
             diff = va - vb
             if (abs(diff) > tol) then
                if (me.eq.0) then

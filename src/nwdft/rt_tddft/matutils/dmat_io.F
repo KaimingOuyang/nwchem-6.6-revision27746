@@ -83,7 +83,7 @@ C
 C     Loop over slices of mat and print to file.
 C         
          do i = 1, n1
-            call ga_get (g_a, 1, n1, i, i, dbl_mb(k_matsl), 1)
+            call tpi_ga_get (g_a, 1, n1, i, i, dbl_mb(k_matsl), 1)
             call swrite (unitno, dbl_mb(k_matsl), n1)
          enddo
 
@@ -102,7 +102,7 @@ C
          if (.not. ma_pop_stack (l_matsl))
      $        call errquit (pname//"failed to pop stack", 0, 0)
       endif
-      call ga_sync ()
+      call tpi_ga_sync ()
 
       end function
 
@@ -186,7 +186,7 @@ C     Loop over slices of mat and store in GA.
 C         
          do i = 1, n1
             call sread (unitno, dbl_mb(k_matsl), n1)
-            call ga_put (g_a, 1, n1, i, i, dbl_mb(k_matsl), n1)
+            call tpi_ga_put (g_a, 1, n1, i, i, dbl_mb(k_matsl), n1)
          enddo
 
          
@@ -204,7 +204,7 @@ C
          if (.not. ma_pop_stack (l_matsl))
      $        call errquit (pname//"failed to pop stack", 0, 0)
       endif
-      call ga_sync ()
+      call tpi_ga_sync ()
 
       end function
 c $Id: dmat_io.F 24344 2013-06-22 06:15:21Z d3y133 $

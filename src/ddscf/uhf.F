@@ -49,7 +49,7 @@ c
 c
 c     Start timer
 c
-      call ga_sync()
+      call tpi_ga_sync()
       uhf_time = -util_cpusec()
 c
 c     Newton-Raphson based SCF
@@ -65,7 +65,7 @@ c
      &                            ecosmo)
       endif
 c
-      call ga_sync()
+      call tpi_ga_sync()
       uhf_time = uhf_time + util_cpusec()
 c
 c     Print out results
@@ -443,7 +443,7 @@ c
      $     ('uhf_nr_solve: ga_destroy work', 0, GA_ERR)
 c     
       if (ga_nodeid().eq.0) call util_flush(6)
-      call ga_sync()
+      call tpi_ga_sync()
 c     
       uhf_nr_solve = converged
 c     
@@ -574,7 +574,7 @@ c
       double precision mone, one, zero, maxk
       parameter(mone=-1.0d0, one=1.0d0, zero=0.0d0)
 c     
-      call ga_sync()
+      call tpi_ga_sync()
 c     
       if (.not. ma_push_get(mt_dbl,nmo,'temp k',l_tmp,k_tmp))
      $     call errquit('uhf_k2cf: ma failed on tmp',  nmo, MA_ERR)
@@ -599,12 +599,12 @@ c
          call ga_zero(g_kmat)
          if (nvir*nocc .gt.0) then
             do i=ga_nodeid()+1,nocc,ga_nnodes()
-               call ga_get(g_kvec, ioff+1+(i-1)*nvir, ioff+i*nvir, 1, 1,
-     $              dbl_mb(k_tmp), 1)
-               call ga_put(g_kmat, nocc1, nmo, i, i,
+               call tpi_ga_get(g_kvec, ioff+1+(i-1)*nvir, ioff+i*nvir,
+     $              1, 1, dbl_mb(k_tmp), 1)
+               call tpi_ga_put(g_kmat, nocc1, nmo, i, i,
      $              dbl_mb(k_tmp), 1)
                call dscal(nvir, mone, dbl_mb(k_tmp), 1)
-               call ga_put(g_kmat, i, i, nocc1, nmo,
+               call tpi_ga_put(g_kmat, i, i, nocc1, nmo,
      $              dbl_mb(k_tmp), 1)
             end do
          endif
@@ -926,7 +926,7 @@ c     add in frozen embedding
         call ga_dadd(1.d0,g_hcore,1.d0,g_frozemb,g_hcore)
       end if
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       eone = 
      $     (ga_ddot(g_a_dens,g_hcore) + ga_ddot(g_b_dens,g_hcore))
@@ -1222,7 +1222,7 @@ c
       if (.not.ma_push_get(MT_DBL,nmo,'uhf: tmp',l_x,k_x))
      $     call errquit('uhf_hdiag_scale: cannot allocate',0, MA_ERR)
 c
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_inquire(g_x, gtype, vlen, nvec)
 c
       shift = lshift - solveshift
@@ -1249,7 +1249,7 @@ c
             do ivec = 1, nvec
                do i = ga_nodeid()+1, nocc(iset), ga_nnodes()
                   ioff = (i-1)*nvir + ibase
-                  call ga_get(g_x, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_get(g_x, ioff, ioff+nvir-1, ivec, ivec,
      $                 dbl_mb(k_x),1)
                   do j=1,nvir
                      denominator = 2.d0 * (diag(j+nocc(iset)) - diag(i))
@@ -1257,7 +1257,7 @@ c
                      if (denominator .lt. 0.1d0) denominator = 0.1d0
                      dbl_mb(k_x+j-1) = dbl_mb(k_x+j-1) / denominator
                   end do
-                  call ga_put(g_x, ioff, ioff+nvir-1, ivec, ivec,
+                  call tpi_ga_put(g_x, ioff, ioff+nvir-1, ivec, ivec,
      $                 dbl_mb(k_x),1)
                end do
             enddo
@@ -1281,7 +1281,7 @@ c
 c
       if (.not. ma_pop_stack(l_x)) call errquit('uhf:pop x',0, MA_ERR)
       if (.not. ma_pop_stack(l_diag)) call errquit('uhf:pop ',0, MA_ERR)
-      call ga_sync()
+      call tpi_ga_sync()
 c
       end
       subroutine uhf_make_shift(shift)
@@ -1304,7 +1304,7 @@ c
      $     l_diag, k_diag)) call errquit
      $     ('uhf_make_shift: insufficient memory', nmo, MA_ERR)
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       shift_a = 0.0d0
       shift_b = 0.0d0
@@ -1496,7 +1496,7 @@ c
 c
       s2 = 0
       do i = 1+ga_nodeid(), nbeta, ga_nnodes()
-         call ga_get(g_smo, 1, nalpha, i, i, dbl_mb(k_x), 1)
+         call tpi_ga_get(g_smo, 1, nalpha, i, i, dbl_mb(k_x), 1)
          do j = 1, nalpha
             s2 = s2 + dbl_mb(k_x+j-1)**2
          enddo

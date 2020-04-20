@@ -49,7 +49,7 @@ c
      I              int_mb(k_a_offset),(h1b_1 - 1 + noab * (h7b_1 - 1 + 
      N              noab * (p5b_1 - noab - 1 + nvab * 
      *              (p4b_1 - noab - 1)))))
-               CALL TCE_SORT_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1),
+               CALL tpi_sort_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1),
      &              int_mb(k_range+p5b-1),int_mb(k_range+h7b-1),
      I              int_mb(k_range+h1b-1),4,2,1,3,-1.0d0)
             END IF
@@ -58,7 +58,7 @@ c
      I              int_mb(k_a_offset),(h7b_1 - 1 + noab * (h1b_1 - 1 +
      N              noab * (p5b_1 - noab - 1 + nvab * (p4b_1 - 
      N              noab - 1)))))
-               CALL TCE_SORT_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1),
+               CALL tpi_sort_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1),
      &              int_mb(k_range+p5b-1),int_mb(k_range+h1b-1),
      I              int_mb(k_range+h7b-1),3,2,1,4,1.0d0)
             END IF
@@ -130,7 +130,7 @@ c
       CALL GET_HASH_BLOCK(d_a,dbl_mb(k_a),dima,int_mb(k_a_offset),(h2b_1
      & - 1 + noab * (h1b_1 - 1 + noab * (p4b_1 - noab - 1 + nvab * (p7b_
      &1 - noab - 1)))))
-      CALL TCE_SORT_4(dbl_mb(k_a),t2sub,int_mb(k_range+p7b-1)
+      CALL tpi_sort_4(dbl_mb(k_a),t2sub,int_mb(k_range+p7b-1)
      &,int_mb(k_range+p4b-1),int_mb(k_range+h1b-1),int_mb(k_range+h2b-1)
      &,4,3,2,1,-1.0d0)
       END IF
@@ -138,7 +138,7 @@ c
       CALL GET_HASH_BLOCK(d_a,dbl_mb(k_a),dima,int_mb(k_a_offset),(h2b_1
      & - 1 + noab * (h1b_1 - 1 + noab * (p7b_1 - noab - 1 + nvab * (p4b_
      &1 - noab - 1)))))
-      CALL TCE_SORT_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1)
+      CALL tpi_sort_4(dbl_mb(k_a),t2sub,int_mb(k_range+p4b-1)
      &,int_mb(k_range+p7b-1),int_mb(k_range+h1b-1),int_mb(k_range+h2b-1)
      &,4,3,1,2,1.0d0)
       END IF
@@ -159,7 +159,7 @@ ccx     &ccsd_t_doubles_2',5,MA_ERR)
      & - 1 + (noab+nvab) * (h3b_2 - 1 + (noab+nvab) * (p6b_2 - 1 + (noab
      &+nvab) * (p5b_2 - 1)))),p7b_2,h3b_2,p6b_2,p5b_2)
       end if
-ccx      CALL TCE_SORT_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+p5b-1)
+ccx      CALL tpi_sort_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+p5b-1)
 ccx     &,int_mb(k_range+p6b-1),int_mb(k_range+h3b-1),int_mb(k_range+p7b-1)
 ccx     &,3,2,1,4,1.0d0)
       END IF

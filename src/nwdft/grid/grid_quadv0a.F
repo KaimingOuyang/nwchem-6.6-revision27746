@@ -185,7 +185,7 @@ c
      Z        call errquit('grid_loop: pop stack failed.',0, MA_ERR)
       endif
 c
-      call ga_sync
+      call tpi_ga_sync
       return
       end
 c $Id: grid_quadv0a.F 27083 2015-05-05 20:58:12Z edo $

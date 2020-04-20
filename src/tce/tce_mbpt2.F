@@ -95,7 +95,7 @@ cc      next = nxtval(nprocs)
                   if (util_print('mbpt2',print_debug))
      1              write(LuOut,9200) ga_nodeid(),p1b,p2b,h3b,h4b,
      2              mbpt2 * factor
-                  call ga_acc(g_mbpt2,1,1,1,1,mbpt2,1,factor)
+                  call tpi_ga_acc(g_mbpt2,1,1,1,1,mbpt2,1,factor)
                   if (.not.ma_pop_stack(l_t2))
      1              call errquit('tce_mbpt2: MA problem',2,MA_ERR)
                   if (.not.ma_pop_stack(l_v2))

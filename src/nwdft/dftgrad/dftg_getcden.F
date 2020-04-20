@@ -37,7 +37,7 @@ c
       ll = iab4l - iab4f + 1
 
 C     i,j
-      call ga_get (g_dens, iab1f, iab1l, iab2f, iab2l, d_ij,ldim)
+      call tpi_ga_get (g_dens, iab1f, iab1l, iab2f, iab2l, d_ij,ldim)
 
 C     k,l
       if ( eik.and.ejl ) then
@@ -45,7 +45,7 @@ C     k,l
       else if ( eil.and.ejk ) then
         call grad_transp ( d_ij, d_kl, li, lj, ldim )
       else
-        call ga_get (g_dens, iab3f, iab3l, iab4f, iab4l, d_kl,ldim)
+        call tpi_ga_get (g_dens, iab3f, iab3l, iab4f, iab4l, d_kl,ldim)
       endif
 
       return

@@ -57,7 +57,7 @@ c Add (epsilon_a-epsilon_i)*trial vector diagonal elements
 c --------------------------------------------------------
 c
       iproc=ga_nodeid()
-      call ga_sync()
+      call tpi_ga_sync()
       do ip=1,ipol
 c
         call nga_distribution(g_x(ip),iproc,alo,ahi)
@@ -76,7 +76,7 @@ c
           ld(1) = nroot
           ld(2) = numi
           ld(3) = numa
-          call nga_get(g_x(ip),alo,ahi,dbl_mb(iptr_x),ld)
+          call tpi_nga_get(g_x(ip),alo,ahi,dbl_mb(iptr_x),ld)
           do a = 0, numa-1
             amo = nocc(ip)+mina+a
             do i = 0, numi-1
@@ -88,14 +88,14 @@ c
               enddo
             enddo
           enddo
-          call nga_acc(g_Ax(ip),alo,ahi,dbl_mb(iptr_x),ld,1.0d0)
+          call tpi_nga_acc(g_Ax(ip),alo,ahi,dbl_mb(iptr_x),ld,1.0d0)
           if (.not.ma_pop_stack(ihdl_x)) 
      +       call errquit(pname//'failed to deallocate block x',0,UERR)
         endif ! doit
 c
       enddo ! ipol
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       return
       end

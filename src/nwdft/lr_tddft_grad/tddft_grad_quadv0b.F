@@ -127,13 +127,13 @@ c Use this for the ground state density matrix (for the gradient of
 c the ground state density).  Note that g_dens(2) and g_dens(4) store
 c the ground state density matrices in TDDFT gradients.
                 if (calctype.eq.1) then
-                  call ga_get(g_dens(2*imat+2*(ispin-1)), 
+                  call tpi_ga_get(g_dens(2*imat+2*(ispin-1)), 
      1              ifirst, ilast, 1, nbf_ao, PPP, nbfia)
 c Use this for the perturbed density matrix (for the gradient of the
 c perturbed density).  Note that g_dens(1) and g_dens(3) store the
 c penturbed density matrices in TDDFT gradients.
                 else if (calctype.eq.2) then
-                  call ga_get(g_dens(imat+2*(ispin-1)), 
+                  call tpi_ga_get(g_dens(imat+2*(ispin-1)), 
      1              ifirst, ilast, 1, nbf_ao, PPP, nbfia)
                 endif
                 do mu = inizia, ifinia

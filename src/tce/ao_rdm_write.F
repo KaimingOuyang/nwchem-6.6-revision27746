@@ -128,7 +128,7 @@ c         do iset = 1, nsets
 c            write(unitno, err=1001) (occ(j,iset),j=1,nbf)
 c            write(unitno, err=1001) (evals(j,iset),j=1,nbf)
 c            do i = 1, nmo(iset)
-c               call ga_get(g_vecs(iset), 1, nbf, i, i, dbl_mb(k_vecs),1)
+c               call tpi_ga_get(g_vecs(iset), 1, nbf, i, i, dbl_mb(k_vecs),1)
 c               call swrite(unitno, dbl_mb(k_vecs), nbf)
 c*               write(unitno, err=1001) (dbl_mb(k_vecs+j), j=0,nbf-1)
 c            enddo

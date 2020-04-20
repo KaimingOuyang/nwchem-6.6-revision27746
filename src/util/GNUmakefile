@@ -35,7 +35,9 @@ errorlongpwd:
 endif
    LIB_DEFINES += -DNWCHEM_SRCDIR="\"$(SRCDIR)\""
 
-
+ifeq (1, $(ENABLE_ARMCI_SET_INFO))
+LIB_DEFINES += -DENABLE_ARMCI_SET_INFO
+endif
 
 # The packing routines have been modified so that they work
 # for all combinations of 32-bit, 64-bit, big-endian, little-endian
@@ -158,7 +160,6 @@ ifneq ($(MPI_INCLUDE),)
 endif
 
 
-
        BLAS = dfill.o ifill.o  mabyte_fill.o 
 
    LIB_TARGETS = testsolve testecce
@@ -170,7 +171,7 @@ endif
                  ga_copy_dz.o dgami.o util_eri_cholesky.o \
                  util_test_cholesky.o util_sillysort.o
 
-  SUBDIRS = md5
+  SUBDIRS = md5 profile
 
         OBJ = output.o errquit.o ffflush.o \
               print_center.o util_flush.o util_sgroup.o \

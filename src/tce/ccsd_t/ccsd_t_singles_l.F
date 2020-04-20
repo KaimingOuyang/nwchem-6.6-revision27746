@@ -215,7 +215,7 @@ c
       CALL GET_HASH_BLOCK_MA(dbl_mb(d_a),dbl_mb(k_a),dima,
      &                       int_mb(k_a_offset),
      &                       (h1b_1-1+noab*(p4b_1-noab-1)))
-      CALL TCE_SORT_2(dbl_mb(k_a),dbl_mb(k_a_sort),
+      CALL tpi_sort_2(dbl_mb(k_a),dbl_mb(k_a_sort),
      &                int_mb(k_range+p4b-1),int_mb(k_range+h1b-1),
      &                2,1,1.0d0)
       IF (.not.MA_POP_STACK(l_a)) 
@@ -232,6 +232,9 @@ c
      &                      (h2b_2-1+(noab+nvab)*(p6b_2-1+(noab+nvab)*
      &                      (p5b_2-1)))),h3b_2,h2b_2,p6b_2,p5b_2)
       end if
+      
+      call tpi_start_timer(1)
+      
       IF ((t_p4b.eq.p4b).and.(t_p5b.eq.p5b).and.(t_p6b.eq.p6b)
      &.and.(t_h1b.eq.h1b).and.(t_h2b.eq.h2b).and.(t_h3b.eq.h3b)) THEN
       call sd_t_s1_1(int_mb(k_range+h3b-1),int_mb(k_range+h2b-1),
@@ -304,6 +307,9 @@ c
      4               a_c,dbl_mb(k_a_sort),dbl_mb(k_b_sort))
 
       END IF
+      
+      call tpi_stop_timer(1)
+
       IF (.not.MA_POP_STACK(l_b_sort)) 
      &       CALL ERRQUIT('ccsd_t_singles_1',7,MA_ERR)
       IF (.not.MA_POP_STACK(l_a_sort)) 

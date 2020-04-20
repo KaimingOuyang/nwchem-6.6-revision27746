@@ -157,9 +157,9 @@ c     TDDFT gradient has not been computed successfully yet.
       tddft_gradient = .false.
 c
 c     Make sure we have the excited states first
-      call ga_sync
+      call tpi_ga_sync
       if (.not.tddft_energy(rtdb)) return
-      call ga_sync
+      call tpi_ga_sync
 c
 c     Get the start times
       tddft_grad_wall = -util_wallsec()
@@ -423,7 +423,7 @@ c     Clean up cosmo stuff, if necessary
      &      write(luout,*) "done cosmo_tidy"
 c
 c     Clean up
-      call ga_sync()
+      call tpi_ga_sync()
       call grid_cleanup(.true.)
       tddft_gradient = .true.
 c
@@ -483,7 +483,7 @@ c
      $        ('hnd_coschg: could not destroy g_vem(2)', 0, ga_err)
           if (.not. ga_destroy(g_vem(3))) call errquit
      $        ('hnd_coschg: could not destroy g_vem(3)', 0, ga_err)
-          call ga_sync()
+          call tpi_ga_sync()
          endif
         endif
        endif

@@ -40,7 +40,7 @@ c     Check if HF is present
 c
       me=ga_nodeid()
       tol2e=10.d0**(-itol2e)
-      call ga_sync
+      call tpi_ga_sync
 c
 c     Query the full density matrix
       call ga_inquire(g_densso(1),type,nao,nao)
@@ -90,7 +90,7 @@ c        Accumulate contribution
          exchY= 0.5d0*ga_ddot(g_dens(1),g_v(1))
 c
 c        == patch into the complex part of the full fock matrix
-         call ga_sync()
+         call tpi_ga_sync()
          call ga_dadd_patch(1.0d0,g_fockso(2),1,nao,nao+1,2*nao,
      &                     -1.d0,g_v(1),1,nao,1,nao,
      &                      g_fockso(2),1,nao,nao+1,2*nao)
@@ -124,7 +124,7 @@ c        Accumulate contribution
          exchY = -0.5d0*ga_ddot(g_dens(1),g_v(1))
 c
 c        == patch into the real part of the full fock matrix
-         call ga_sync()
+         call tpi_ga_sync()
          call ga_dadd_patch(1.0d0,g_fockso(1),1,nao,nao+1,2*nao,
      &                      1.d0,g_v(1),1,nao,1,nao,
      &                      g_fockso(1),1,nao,nao+1,2*nao)

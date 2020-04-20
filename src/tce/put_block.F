@@ -79,7 +79,7 @@ c
      2      call errquit('put_block: eaf problem',5,DISK_ERR)
         endif
       else if (ioalg.eq.2) then
-        call ga_put(d_file,offset+1,offset+size,1,1,
+        call tpi_ga_put(d_file,offset+1,offset+size,1,1,
      1    array,1)
       else if (ioalg.eq.3) then
         if (parallel) then
@@ -103,7 +103,7 @@ c
      2    call errquit('put_block: eaf problem',2,DISK_ERR)
       else if (ioalg.eq.5) then
         if (fileisga(d_file)) then
-          call ga_put(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_put(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1)
         else
           call errquit('put_block: a write request to DRA',1,
@@ -111,7 +111,7 @@ c
         endif
       else if (ioalg.eq.6) then
         if (fileisga(d_file)) then
-          call ga_put(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_put(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1)
         else
           if (eaf_write(filehandles(d_file),

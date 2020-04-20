@@ -77,7 +77,7 @@ c
      2      call errquit('get_block: eaf problem',5,DISK_ERR)
         endif
       else if (ioalg.eq.2) then
-        call ga_get(d_file,offset+1,offset+size,1,1,
+        call tpi_ga_get(d_file,offset+1,offset+size,1,1,
      1    array,1)
       else if (ioalg.eq.3) then
         if (parallel) then
@@ -101,7 +101,7 @@ c
      2    call errquit('get_block: eaf problem',7,DISK_ERR)
       else if (ioalg.eq.5) then
         if (fileisga(d_file)) then
-          call ga_get(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_get(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1)
         else
           write(LuOut,*) 'filehandles = ',d_file,filehandles(d_file)
@@ -111,7 +111,7 @@ c
         endif
       else if (ioalg.eq.6) then
         if (fileisga(d_file)) then
-          call ga_get(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_get(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1)
         else
           if (eaf_read(filehandles(d_file),

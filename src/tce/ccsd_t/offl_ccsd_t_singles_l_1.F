@@ -243,7 +243,7 @@ cfrom l_triplesx
       IF ((dima .gt. 0) .and. (dimb .gt. 0)) THEN
       CALL GET_HASH_BLOCK_MA(d_a,scratch,dima,
      & int_mb(k_a_offset),(h1b_1 - 1 + noab * (p4b_1 - noab - 1)))
-      CALL TCE_SORT_2(scratch,t1sub,k_range_p4b_1
+      CALL tpi_sort_2(scratch,t1sub,k_range_p4b_1
      &,k_range_h1b_1,2,1,1.0d0)
       if(.not.intorb) then
       CALL GET_HASH_BLOCK(d_b,v2sub,dimb,

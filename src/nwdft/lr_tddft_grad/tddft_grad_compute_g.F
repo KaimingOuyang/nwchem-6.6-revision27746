@@ -690,7 +690,7 @@ c            call ga_copy(g_d(1), g_dtmp(2)) ! g_dtmp(2) stores D_alpha
 c            call ga_copy(g_d(3), g_dtmp(1)) ! g_dtmp(1) stores P_alpha
 c            call ga_copy(g_d(4), g_dtmp(3)) ! g_dtmp(3) stores P_beta
 c          endif
-c          call ga_sync()
+c          call tpi_ga_sync()
 c          call xc_init_index(ihdl_geom,ipol,nao,ihdl_bfao,g_dtmp,
 c     &         l_cntoce, k_cntoce, l_cntobfr, k_cntobfr,
 c     &         l_cetobfr, k_cetobfr, l_rdens_atom, k_rdens_atom)
@@ -928,7 +928,7 @@ c this.
             call ga_copy(g_d(5), g_dtmp(1)) ! g_dtmp(1) stores (X+Y)_alpha
             call ga_copy(g_d(6), g_dtmp(3)) ! g_dtmp(3) stores (X+Y)_beta
           endif
-          call ga_sync()
+          call tpi_ga_sync()
           call xc_init_index(ihdl_geom,ipol,nao,ihdl_bfao,g_dtmp,
      &         l_cntoce, k_cntoce, l_cntobfr, k_cntobfr,
      &         l_cetobfr, k_cetobfr, l_rdens_atom, k_rdens_atom)
@@ -1108,7 +1108,7 @@ c
 c
 c G.6   Accumulate the contributions across all processors
 c
-        call ga_sync()
+        call tpi_ga_sync()
         call ga_dgop(msg_grad_nuc, dbl_mb(k_frc_nuc), lforce, '+')
         call ga_dgop(msg_grad_wgh, dbl_mb(k_frc_wgh), lforce, '+')
         call ga_dgop(msg_grad_kin, dbl_mb(k_frc_kin), lforce, '+')
@@ -1122,7 +1122,7 @@ c Daniel (4-8-13): Need conditional statement here for CAM functionals
         call ga_dgop(msg_grad_df0, dbl_mb(k_frc_df0), lforce, '+')
         call ga_dgop(msg_grad_df1, dbl_mb(k_frc_df1), lforce, '+')
         call ga_dgop(msg_grad_dft, dbl_mb(k_frc_dft), lforce, '+')
-        call ga_sync()
+        call tpi_ga_sync()
 c
 c       Add the gradient contributions to the global array
 c
@@ -1150,7 +1150,7 @@ c Daniel (4-8-13): Need conditional statement here for CAM functionals
         ld(1)  = 1
         ld(2)  = 3
         ld(3)  = nat
-        call nga_acc(g_g,ilo,ihi,dbl_mb(k_force),ld,1.0d0/nproc)
+        call tpi_nga_acc(g_g,ilo,ihi,dbl_mb(k_force),ld,1.0d0/nproc)
 c
 c       Print results if so required
 c

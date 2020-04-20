@@ -33,7 +33,7 @@ c
 c
       me=ga_nodeid()
       tol2e=10.d0**(-itol2e)
-      call ga_sync
+      call tpi_ga_sync
 c
 c     Query the full density matrix
       call ga_inquire(g_densso(1),type,nao,nao)
@@ -78,7 +78,7 @@ c     Accumulate contribution
       ecoul = 0.5d0*ga_ddot(g_dens(1),g_v(1))
 c
 c     == patch in the coulomb into the fock matrix ==
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_dadd_patch( 1.d0, g_fockso(1), 1, nao,
      &     1, nao,
      &     1.0d0, g_v(1),  1, nao,

@@ -61,8 +61,8 @@ C-------------------------local variables--------------------------
       integer i_qbq,i_cbq
       double precision r12
 c
-      integer nxtask, task_size
-      external nxtask
+      integer nxtask,tpinxt,tpisynxt,task_size
+      external nxtask,tpinxt,tpisynxt
 
       task_size = 1
       status = rtdb_parallel(.true.) ! Broadcast reads to all processes
@@ -72,7 +72,7 @@ c
       call hf_print_set(1)
 
       ijatom = -1
-      next = nxtask(nproc,task_size)
+      next = tpinxt(nproc,task_size)
       do 90, iat1 = 1, nat
         do 80, iat2 = 1, iat1
 
@@ -99,8 +99,10 @@ c
             status = bas_ce2cnr(basis,iat1,iac1f,iac1l)
             status = bas_ce2cnr(basis,iat2,iac2f,iac2l)
 
-            call ga_get (g_dens, iab1f,iab1l,iab2f,iab2l,dens,max_at_bf)
-            call ga_get(g_wdens,iab1f,iab1l,iab2f,iab2l,wdens,max_at_bf)
+            call tpi_ga_get (g_dens, iab1f,iab1l,iab2f,iab2l,
+     &                       dens,max_at_bf)
+            call tpi_ga_get(g_wdens,iab1f,iab1l,iab2f,iab2l,
+     &                      wdens,max_at_bf)
 
             do 70, ish1 = iac1f, iac1l
               if ( iat1.eq.iat2 ) iac2l = ish1
@@ -196,12 +198,12 @@ C               no forces between point charges (for John Nicholas)
               endif
             endif
 
-            next = nxtask(nproc,task_size)
+            next = tpinxt(nproc,task_size)
           endif
 
  80     continue
  90   continue
-      next = nxtask(-nproc,task_size)
+      next = tpisynxt(-nproc,task_size)
 
 c     
 c     continue with forces if there are external charges (MV)
@@ -213,7 +215,7 @@ c     --------------------------------------------------
       i_qbq = geom_extbq_charge()
 
       ijatom = -1
-      next = nxtask(nproc,task_size)
+      next = tpinxt(nproc,task_size)
       do 91, iat1 = 1, nat
         do 81, iat2 = 1, bq_ncent
 
@@ -242,11 +244,11 @@ c           == check for small distances (the regions could overlap) ==
               frc_nuc(3,iat1) = frc_nuc(3,iat1) + dE
             end if
 c
-            next = nxtask(nproc,task_size)
+            next = tpinxt(nproc,task_size)
           endif
  81     continue
  91   continue
-      next = nxtask(-nproc,task_size)
+      next = tpisynxt(-nproc,task_size)
 c
       return
       end

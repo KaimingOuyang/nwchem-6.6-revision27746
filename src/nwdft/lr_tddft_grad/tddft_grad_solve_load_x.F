@@ -80,7 +80,7 @@ c     Code:
 c
       ioerror = .false.
       success = .false.
-      call ga_sync
+      call tpi_ga_sync
       do ip = 1, ipol
         idim(1) = 1
         idim(2) = naoc(ip)
@@ -150,7 +150,7 @@ c
                       ioerror = ioerror .or. iostatus.gt.0
                       ioerror = ioerror .or. (ik.ne.k.or.ij.ne.j)
                     enddo
-                    call nga_put(g_mat_ao,mlo,mhi,buf,idim)
+                    call tpi_nga_put(g_mat_ao,mlo,mhi,buf,idim)
                   endif
                 enddo
               enddo

@@ -64,7 +64,7 @@ cifdef  BAD_GACCESS
 celse
 c     call ga_distribution(g_m, ga_nodeid(), iplo, iphi, jplo, jphi)
 c
-c     call ga_sync()
+c     call tpi_ga_sync()
 c     if (iplo.gt.0 .and. iplo.le.iphi) then
 c        numi =  min(ihi,iphi) - max(ilo,iplo) + 1
 c        numj =  min(jhi,jphi) - max(jlo,jplo) + 1
@@ -74,7 +74,7 @@ c          do j = max(jlo,jplo), min(jhi,jphi)
 c             k = klo + (j-jlo)*(ihi-ilo+1) + max(ilo,iplo) - ilo
 c             ioff = k_m + (j-jplo)*ld + max(ilo,iplo) - iplo
 c             if (op .eq. '=') then
-c               call ga_put(g_v, k, k+numi-1, col, col, dbl_mb(ioff), 1)
+c               call tpi_ga_put(g_v, k, k+numi-1, col, col, dbl_mb(ioff), 1)
 c             else if (op .eq. '+') then
 c               call ga_acc(g_v, k, k+numi-1, col, col, dbl_mb(ioff), 1,
 c    $                      scale)
@@ -86,7 +86,7 @@ c          call ga_release(g_m,iplo,iphi,jplo,jphi)
 c        endif
 c     endif
 cendif
-c     call ga_sync()
+c     call tpi_ga_sync()
 c
       end
       subroutine tddft_grad_vec_to_mat(g_m, ilo, ihi, g_v, klo, col)
@@ -138,7 +138,7 @@ cifdef  BAD_GACCESS
 celse 
 c     call ga_distribution(g_m, ga_nodeid(), iplo, iphi, jplo, jphi)
 c
-c     call ga_sync()
+c     call tpi_ga_sync()
 c     if (iplo.gt.0 .and. iplo.le.iphi) then
 c        numi =  min(ihi,iphi) - max(ilo,iplo) + 1
 c        numj =  min(jhi,jphi) - max(jlo,jplo) + 1
@@ -147,12 +147,12 @@ c          call ga_access(g_m,iplo,iphi,jplo,jphi,k_m,ld)
 c          do j = max(jlo,jplo), min(jhi,jphi)
 c             k = klo + (j-jlo)*(ihi-ilo+1) + max(ilo,iplo) - ilo
 c             ioff = k_m + (j-jplo)*ld + max(ilo,iplo) - iplo
-c             call ga_get(g_v, k, k+numi-1, col, col, dbl_mb(ioff), 1)
+c             call tpi_ga_get(g_v, k, k+numi-1, col, col, dbl_mb(ioff), 1)
 c          enddo
 c          call ga_release(g_m,iplo,iphi,jplo,jphi)
 c        endif
 c     endif
 cendif
-c     call ga_sync()
+c     call tpi_ga_sync()
 c
       end

@@ -461,7 +461,7 @@ c
       parameter(i8 = 8)
       double precision fdmp, fdmp3, cni, cnj,c6d3,xc_fdmpbj
       double precision c6ij_sk,rij,c6cn,crd_nr,e6,e8,r0bj
-      external c6ij_sk,c6cn,nxtask,crd_nr,fdmp3,xc_fdmpbj
+      external c6ij_sk,c6cn,nxtask,tpinxt,tpisynxt,crd_nr,fdmp3,xc_fdmpbj
 c
       xc_vdw_e=0d0
       e6=0.0d0
@@ -886,7 +886,7 @@ c
 
       endif
 c
-      call ga_sync
+      call tpi_ga_sync
 c
       return
 99900 continue

@@ -94,13 +94,13 @@ c
           enddo
         enddo
 c
-        call ga_sync()
+        call tpi_ga_sync()
         do i=1,ipol
          call ga_distribution(g_trials(i),iproc,ilo,ihi,jlo,jhi)
          if ((jlo.le.1).and.(jhi.ge.ntrials)) then
-          call ga_get(g_trials(i),ilo,ihi,1,ntrials,
+          call tpi_ga_get(g_trials(i),ilo,ihi,1,ntrials,
      1      dbl_mb(k_trial),maxnov)
-          call ga_get(g_prod_p(i),ilo,ihi,1,ntrials,
+          call tpi_ga_get(g_prod_p(i),ilo,ihi,1,ntrials,
      1      dbl_mb(k_prod),maxnov)
           do m=1,ntrials
             do n=1,ntrials
@@ -112,7 +112,7 @@ c
             enddo
           enddo
           if (.not.tda) then
-            call ga_get(g_prod_m(i),ilo,ihi,1,ntrials,
+            call tpi_ga_get(g_prod_m(i),ilo,ihi,1,ntrials,
      1        dbl_mb(k_prod),maxnov)
             do m=1,ntrials
               do n=1,ntrials

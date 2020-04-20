@@ -94,7 +94,7 @@ c
 c
 c       Save g_x.
 c
-        call ga_sync
+        call tpi_ga_sync
         do ip = 1, ipol
           idim(1) = 1
           idim(2) = naoc(ip)
@@ -201,7 +201,7 @@ c
                   mhi(3) = j
                   idim(1) = 1
                   idim(2) = maxi
-                  call nga_get(g_mat_ao,mlo,mhi,buf,idim)
+                  call tpi_nga_get(g_mat_ao,mlo,mhi,buf,idim)
                   do k = mlo(2), mhi(2)
                     write(69,*,err=90010)k,j,buf(k-mlo(2)+1)
                   enddo

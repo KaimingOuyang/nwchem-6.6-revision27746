@@ -280,7 +280,7 @@ c
         enddo
       enddo
 c
-c     call ga_sync
+c     call tpi_ga_sync
       if (.not.ga_destroy(g_diu)) call errquit
      +   ('tddft_grad_trans_ao2mo: failed to destroy g_diu',0, GA_ERR)
 c

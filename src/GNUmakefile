@@ -16,7 +16,7 @@ ifeq ($(XLFMAC),y)
   DEFINES= 
 endif
 
-NWBINNAME = nwchem
+NWBINNAME ?= nwchem
 
 #
 # This should be the first target so that a simple make builds

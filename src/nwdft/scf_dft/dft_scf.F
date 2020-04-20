@@ -1309,7 +1309,7 @@ c
          if (me.eq.0 .and. oprint_conv_details)
      &      write(LuOut,4224)homo,lumo,rlshift, homo_lumo_gap
 c     
-         call ga_sync
+         call tpi_ga_sync
 c     
 c        Save previous density for convergence check.
 c     
@@ -1418,7 +1418,7 @@ c Constrained DFT
 c Constrained DFT / end
 
 
-      call ga_sync
+      call tpi_ga_sync
          if(n_rabuck.ne.0) then
             ssmear=dft_rabuck(ipol,iter,n_rabuck,noc,derr,
      ,     dbl_mb(k_eval(1)),dbl_mb(k_eval(2)))
@@ -1507,7 +1507,7 @@ c
             ndamp = 0
          endif
       enddo                     ! end loop over ispin
-      call ga_sync
+      call tpi_ga_sync
 c     
       if (oprint_conv.and.iter.eq.1.and.me.eq.0)then
 c
@@ -1556,7 +1556,7 @@ c
       call ecce_print1 ('iterative total density difference', 
      &                  mt_dbl, sqrt(rms(1)), 1)
 c
-      call ga_sync
+      call tpi_ga_sync
 c     
 c     save eigenvectors to movecs file
 c     
@@ -1595,7 +1595,7 @@ c
 c     
 c     Check for SCF convergence.
 c     
-      call ga_sync
+      call tpi_ga_sync
       if (oprint_time)
      &     call dft_tstamp(' calling scfcvg ')
 c
@@ -1762,13 +1762,13 @@ c
          if(damping) then
          endif
 c
-         call ga_sync()
+         call tpi_ga_sync()
          go to 3000
       elseif(cosmo_on) then
          esol      =etnew+enuc
       endif
       if (odftps) call pstat_on(ps_scfend)
-      call ga_sync()
+      call tpi_ga_sync()
 c
 c     Scale the zora eigenvalues and energy
       ener_scal = 0.d0
@@ -1836,7 +1836,7 @@ c
           endif
       endif
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
 c <-- MN solvation models
 c
@@ -2117,7 +2117,7 @@ c            call movecs_print_anal(ao_bas_han, ilo, ihi, 0.15d0,
             write(6,*)
             call util_flush(6)
          end if
-         call ga_sync()
+         call tpi_ga_sync()
          do ispin = 1, ipol
             call ga_print(g_movecs(ispin))
             call util_flush(6)

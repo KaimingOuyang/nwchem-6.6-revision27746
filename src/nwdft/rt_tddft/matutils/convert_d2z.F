@@ -163,15 +163,15 @@ C     == Variables ==
       if (me.eq.0) then
          do i = 1, n
             do j = 1, n
-               call ga_get (g_a, i, i, j, j, val_a, 1)
-               call ga_get (g_b, i, i, j, j, val_b, 1)
+               call tpi_ga_get (g_a, i, i, j, j, val_a, 1)
+               call tpi_ga_get (g_b, i, i, j, j, val_b, 1)
                
                val_z = dcmplx (val_a, val_b)
-               call ga_put (g_z, i, i, j, j, val_z, 1)
+               call tpi_ga_put (g_z, i, i, j, j, val_z, 1)
             enddo
          enddo
       endif
-      call ga_sync ()
+      call tpi_ga_sync ()
       
       end subroutine
 
@@ -215,7 +215,7 @@ C     == Variables ==
       integer jslice, j
       logical ok
 
-      call ga_sync ()
+      call tpi_ga_sync ()
 
       me = ga_nodeid ()
       np = ga_nnodes ()
@@ -274,8 +274,8 @@ C
 
 
       do jslice = istart, iend
-         call ga_get (g_a, 1, n, jslice, jslice, dbl_mb(ia), 1)
-         call ga_get (g_b, 1, n, jslice, jslice, dbl_mb(ib), 1)
+         call tpi_ga_get (g_a, 1, n, jslice, jslice, dbl_mb(ia), 1)
+         call tpi_ga_get (g_b, 1, n, jslice, jslice, dbl_mb(ib), 1)
 
 
 C
@@ -292,7 +292,7 @@ C
      $           dcmplx (0d0, dbl_mb(ib+j-1))
          enddo
 
-         call ga_put (g_z, 1, n, jslice, jslice, dcpl_mb(iz), 1)
+         call tpi_ga_put (g_z, 1, n, jslice, jslice, dcpl_mb(iz), 1)
          
       enddo                     ! end loop over slices on this proc
       
@@ -303,7 +303,7 @@ C
       if (.not. ma_chop_stack (la))
      $     call errquit (pname//"failed to chop stack", 0, MA_ERR)
 
-      call ga_sync ()
+      call tpi_ga_sync ()
       
       end subroutine
 
@@ -350,7 +350,7 @@ C     == Variables ==
 
  
 C     not needed I think
-C      call ga_sync ()
+C      call tpi_ga_sync ()
 
       call calc_array_partitioning (n, m, istart, iend, bfr_size)
       
@@ -363,8 +363,8 @@ C      call ga_sync ()
          ok = ok.and.ma_push_get(mt_dcpl, bfr_size, pname//"z", lz, iz)
          if (.not.ok) call errquit(pname//"failed to allocate",0,MA_ERR)
          
-         call ga_get (g_a, 1, n, istart, iend, dbl_mb(ia), n)
-         call ga_get (g_b, 1, n, istart, iend, dbl_mb(ib), n)
+         call tpi_ga_get (g_a, 1, n, istart, iend, dbl_mb(ia), n)
+         call tpi_ga_get (g_b, 1, n, istart, iend, dbl_mb(ib), n)
          
          do j = 1, bfr_size
             aval = dbl_mb(ia+j-1)
@@ -372,14 +372,14 @@ C      call ga_sync ()
             dcpl_mb(iz + j - 1) = dcmplx (aval, bval)
          enddo
          
-         call ga_put (g_z, 1, n, istart, iend, dcpl_mb(iz), n)
+         call tpi_ga_put (g_z, 1, n, istart, iend, dcpl_mb(iz), n)
 
          if (.not. ma_chop_stack (la))
      $        call errquit (pname//"failed to chop stack", 0, MA_ERR)
       endif
 
 C     not needed I think
-C      call ga_sync ()
+C      call tpi_ga_sync ()
 
       end subroutine
 #endif 

@@ -29,12 +29,12 @@ C     read operation, else all of them
 
       logical status
 
-      integer nxtask
-      external nxtask
+      integer nxtask,tpinxt,tpisynxt
+      external nxtask,tpinxt,tpisynxt
 
       parameter (zero=0.0D0)
 
-      next = nxtask(nproc,1)
+      next = tpinxt(nproc,1)
       ic = 0
 
       do in = 1, nt
@@ -105,23 +105,23 @@ C           place them in sthree
             endif
 
 C           place patch in global square array
-            call ga_put (g_sthree, ioffs+1, ioffs+ilast, ifirst, ilast, 
-     $           sthree, nbf)
+            call tpi_ga_put (g_sthree, ioffs+1, ioffs+ilast, ifirst,
+     $            ilast, sthree, nbf)
 C           put the transpose of it in the other triangle
             jlast = ilast - ni
             if ( jlast .gt. 0 ) then
 C             use three for transpose of sthree
               call riscf_transpose (sthree, three, jlast, ni, nbf, ni)
-              call ga_put (g_sthree, ioffs+ifirst, ioffs+ilast, 
+              call tpi_ga_put (g_sthree, ioffs+ifirst, ioffs+ilast, 
      $             1, jlast, three, ni)
             endif 
 
-            next = nxtask(nproc,1)
+            next = tpinxt(nproc,1)
           endif ! next
           ic = ic + 1
         enddo   ! nsh
       enddo     ! nt
-      next = nxtask(-nproc,1)
+      next = tpisynxt(-nproc,1)
 
       return
       end

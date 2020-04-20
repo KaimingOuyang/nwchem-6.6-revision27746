@@ -104,9 +104,9 @@ c
 c     Build upper diagonal matrix. in MO basis
 c     
          do j = nocc+1+me, nmo, nproc
-            call ga_get(g_fockt, j, j, j, j, fjj, 1)
+            call tpi_ga_get(g_fockt, j, j, j, j, fjj, 1)
             fjj=fjj+rlshift
-            call ga_put(g_fockt, j, j, j, j, fjj, 1)
+            call tpi_ga_put(g_fockt, j, j, j, j, fjj, 1)
          enddo
       else
          rlshift = 0.0
@@ -124,8 +124,8 @@ c rather than correct eigenvalues
      $  2, GA_ERR)
        call ga_zero(g_fockt_tmp)
        do j = 1+me, nmo, nproc
-            call ga_get(g_fockt, j, j, j, j, fjj, 1)
-            call ga_put(g_fockt_tmp, j, j, j, j, fjj, 1)
+            call tpi_ga_get(g_fockt, j, j, j, j, fjj, 1)
+            call tpi_ga_put(g_fockt_tmp, j, j, j, j, fjj, 1)
        enddo
        call ga_copy(g_fockt_tmp,g_fockt)
        if (.not. ga_destroy(g_fockt_tmp)) call errquit
@@ -340,7 +340,7 @@ c
          if(ahi(1).ge.istart) then
             do i=max(alo(1),istart),min(ahi(1),dimm)
                if(i.ge.alo(2).and.i.le.ahi(2))
-     P              call ga_put(g_a,i,i,i,i,1d0,0)
+     P              call tpi_ga_put(g_a,i,i,i,i,1d0,0)
             enddo
          endif
       endif

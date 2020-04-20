@@ -116,8 +116,8 @@ c
       integer lgthpmat
       integer len_Mmat,len_ttau,len_Mmat2
       integer lscr,iscr
-      integer nxtask
-      external nxtask
+      integer nxtask,tpinxt,tpisynxt
+      external nxtask,tpinxt,tpisynxt
 c Daniel (1-14-13): This is needed for evaluating the gradient of the
 c XC-kernel, which can be directly evaluated from the XC-third
 c derivative multiplied by the gradient of the ground state density.
@@ -651,7 +651,7 @@ c      elseif (do_hess .or. do_cpks_r) then
      &   call errquit('dftg_gridv0: cannot pop stack',0, MA_ERR)
 c
       icount = 1
-      n1 = nxtask(-nproc,icount)
+      n1 = tpisynxt(-nproc,icount)
 c
       call ga_igop(Msg_nqtot,nqtot,1,'+')
       call ga_dgop(Msg_Excrho,rho_int,1,'+')

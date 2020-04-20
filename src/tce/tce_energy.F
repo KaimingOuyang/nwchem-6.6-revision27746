@@ -1141,12 +1141,12 @@
 !
 !     copy the entire distributed GA to local buffer
 !
-      call ga_get(d_f1,1,size_1e,1,1,dbl_mb(k_f1temp),1)
+      call tpi_ga_get(d_f1,1,size_1e,1,1,dbl_mb(k_f1temp),1)
       call ga_sync()
 !
 !     put it back in the mirrored GA
 !
-      call ga_put(d_f1temp,1,size_1e,1,1,dbl_mb(k_f1temp),1)
+      call tpi_ga_put(d_f1temp,1,size_1e,1,1,dbl_mb(k_f1temp),1)
       call ga_sync() ! no need to merge_mirrored since copying entire array
 !
 !     delete the distributed version
@@ -2548,7 +2548,7 @@
      1      call errquit('t1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 !    copy d_t1 ==> l_t1_local
-        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
        end if
 ! -------------------------------
           call tce_filename('e',filename)
@@ -7549,8 +7549,8 @@
         call ma_zero(dbl_mb(k_x1_local),size_x1)
 !    copy d_t1 ==> l_t1_local
 !    copy x1(ivec) ==> l_x1_local
-!c        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
-!c        call ga_get(x1(ivec),1,size_x1,1,1,dbl_mb(k_x1_local),1)
+!c        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+!c        call tpi_ga_get(x1(ivec),1,size_x1,1,1,dbl_mb(k_x1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
       call get_block(x1(ivec),dbl_mb(k_x1_local),size_x1,0)
 !cx       end if
@@ -8307,8 +8307,8 @@
      1      call errquit('x1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
         call ma_zero(dbl_mb(k_x1_local),size_x1)
-!c        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
-!c        call ga_get(x1(iroot),1,size_x1,1,1,dbl_mb(k_x1_local),1)
+!c        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+!c        call tpi_ga_get(x1(iroot),1,size_x1,1,1,dbl_mb(k_x1_local),1)
         call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
         call get_block(x1(iroot),dbl_mb(k_x1_local),size_x1,0)
 ! -------------------------------
@@ -8489,8 +8489,8 @@
      1      call errquit('x1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
         call ma_zero(dbl_mb(k_x1_local),size_x1)
-!c        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
-!c        call ga_get(x1(ipos),1,size_x1,1,1,dbl_mb(k_x1_local),1)
+!c        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+!c        call tpi_ga_get(x1(ipos),1,size_x1,1,1,dbl_mb(k_x1_local),1)
         call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
         call get_block(x1(ipos),dbl_mb(k_x1_local),size_x1,0)
 ! -------------------------------
@@ -9528,8 +9528,8 @@
      1      call errquit('x1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
         call ma_zero(dbl_mb(k_x1_local),size_x1)
-        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
-        call ga_get(x1(iroot),1,size_x1,1,1,dbl_mb(k_x1_local),1)
+        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+        call tpi_ga_get(x1(iroot),1,size_x1,1,1,dbl_mb(k_x1_local),1)
 ! -------------------------------
           call eomccsd_x1a(d_f1,xp1(iroot),k_t1_local,d_t2,d_v2,
      1      k_x1_local,x2(iroot),k_f1_offset,k_x1_offset,
@@ -9639,8 +9639,8 @@
      1      call errquit('x1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
         call ma_zero(dbl_mb(k_x1_local),size_x1)
-        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
-        call ga_get(x1(ipos),1,size_x1,1,1,dbl_mb(k_x1_local),1)
+        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+        call tpi_ga_get(x1(ipos),1,size_x1,1,1,dbl_mb(k_x1_local),1)
 ! -------------------------------
           call eomccsd_x1a(d_f1,xp1(ipos),k_t1_local,d_t2,d_v2,
      1      k_x1_local,x2(ipos),k_f1_offset,k_x1_offset,

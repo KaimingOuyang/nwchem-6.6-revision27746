@@ -52,9 +52,9 @@ c
       logical oprint, oprint_ioinfo
       character*(nw_max_path_len) cdfit_filename
       double precision dabsmax
-      integer nxtask
+      integer nxtask,tpinxt,tpisynxt
       integer          itype,nprimo,isphere
-      external dabsmax,nxtask
+      external dabsmax,nxtask,tpinxt,tpisynxt
       logical spherical
       integer LU,ierr,ilo,ihi,jlo,jhi,nnii
       integer adrc,ldc,iptr
@@ -129,7 +129,7 @@ c
 c      
 c     Integrate CD fitting functions in each shell
 c
-      call ga_sync
+      call tpi_ga_sync
       do ish = 1,nshells_cd
         if (.not. bas_cn2bfr( CD_bas_han,ish,
      &                       ifirst,ilast))
@@ -169,7 +169,7 @@ c     &       nbf_cd,nbf_cd,'CD 2cERInv',g_cdinv,'row')
         call ga_brdcst(2000, lmiss,MA_sizeof(MT_INT,1,MT_BYTE),0)
         if(lmiss.ne.0)call errquit
      &       (' dft_fitcd; dft_invio - abnormal read of CDI ',0, GA_ERR)
-cedo        call ga_sync
+cedo        call tpi_ga_sync
         if(oprint_ioinfo)then
           call ga_print(g_cdinv)
         endif
@@ -188,7 +188,7 @@ c
      &     call errquit('dft_fitcd: cannot allocate Tcgtf',0, MA_ERR)
        call dcopy(nbf_cd,0.D0,0,dbl_mb(iTcgtf),1)
 c
-      call ga_sync()
+      call tpi_ga_sync()
       call  ga_distribution(g_cdinv,me,ilo,ihi,jlo,jhi)
       if (ilo.gt.0) then
       call ga_access(g_cdinv, ilo, ihi, jlo, jhi, adrc, ldc)
@@ -287,7 +287,7 @@ c     write(*,*)' Dbl_MB(icgtf) = ',(Dbl_MB(icgtf+i),i=0,nbf_cd-1)
 c     write(*,*)' CD_coef = ',(CD_coef(i,ifit),i=1,nbf_cd)
          endif
       enddo
-cedo      call ga_sync
+cedo      call tpi_ga_sync
 c      if (derfit) then
 c         write(*,*)'Fit coefficients:'
 c         call output(cd_coef, 1, nbf_cd, 1, nfit, nbf_cd, nfit, 1)
@@ -422,7 +422,7 @@ c            endif
             qatom(iat) = qatom(iat) + qshell(ish)
          enddo
       enddo
-cedo      call ga_sync
+cedo      call tpi_ga_sync
       if (oprint_mull_fit) then
          call ga_dgop(Msg_Mull1, qatom, natoms,'+')
          call ga_dgop(Msg_Mull2, qshell, nshells,'+')
@@ -454,7 +454,7 @@ cedo      call ga_sync
             enddo
          enddo
       endif
-      call ga_sync
+      call tpi_ga_sync
    10 format(/' Atom   Charge   Shell Charges')
    20 format(15x,10(3x,a1,2x))
    30 format(1x,i4,1x,f8.2,1x,10(f6.2))

@@ -52,7 +52,7 @@ c
      +           2(1X,(3(10X,A1))))
           ilo(1) = ir
           ihi(1) = ir
-          call nga_get(g_g,ilo,ihi,dbl_mb(k_grd),ld)
+          call tpi_nga_get(g_g,ilo,ihi,dbl_mb(k_grd),ld)
           do iat=1,nat
             if (.not. geom_cent_get(ihdl_geom,iat,tag,crd,q)) 
      +        call errquit

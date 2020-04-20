@@ -175,7 +175,7 @@ c
         call ga_dadd(1.d0,g_hcore,1.d0,g_frozemb,g_hcore)
       end if
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       eone_closed = ga_ddot(g_hcore, g_cdens)
       eone_open = 0.0d0

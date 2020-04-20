@@ -60,6 +60,10 @@ c
 c     Make sure database is parallel, 
 c     and initialize performance statistics
 c
+
+      call tpi_start()
+      call tpi_push_name_level1("scf")
+
       status = rtdb_parallel(.true.)
       call util_print_push
       call util_print_rtdb_load(rtdb, 'scf')
@@ -381,6 +385,10 @@ c
       endif
 c
       scf = converged
+
+      call tpi_pop_name_level1("scf")
+      call tpi_stop()
+
 c
 c !!! BGJ
       if (.not. rtdb_get(rtdb, 'bgj:poliz', mt_log,

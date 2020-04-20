@@ -40,7 +40,7 @@ c
      1    l_temp,k_temp))
      2    call errquit('gatoeaf: MA problem',0,MA_ERR)
         do i = 1,nblocks
-          call ga_get(filehandles(d_sf),(i-1)*blocksize+1,
+          call tpi_ga_get(filehandles(d_sf),(i-1)*blocksize+1,
      1      min(size,i*blocksize),1,1,dbl_mb(k_temp),1)
           if (eaf_write(d_temp,dfloat(bytes)*dfloat((i-1)*blocksize),
      1      dbl_mb(k_temp),

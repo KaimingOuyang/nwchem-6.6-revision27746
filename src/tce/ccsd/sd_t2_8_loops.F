@@ -16,7 +16,7 @@ C     i0 ( p3 p4 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v ( 
       INTEGER k_b_offset
       INTEGER d_c
       INTEGER k_c_offset
-c old way      INTEGER NXTASK
+c old way      INTEGER tpinxt,tpisynxt
 c -------------------------
       INTEGER ctx,icounter
       external nxt_ctx_create, nxt_ctx_destroy, nxt_ctx_next
@@ -64,11 +64,11 @@ c      logical nodezero         ! True if node 0
 c      double precision cpu     ! CPU sec counter
 c      double precision wall    ! WALL sec counter
 c *************
-c old way      EXTERNAL NXTASK
+c old way      EXTERNAL tpinxt,tpisynxt
       EXTERNAL FACTORIAL
       nprocs = GA_NNODES()
       count = 0
-c old way      next = NXTASK(nprocs, 1)
+c old way      next = tpinxt(nprocs, 1)
 c --- new way ----
       call nxt_ctx_next(ctx, icounter, next)
 c ----------------
@@ -108,7 +108,7 @@ c ----------------
       CALL GET_HASH_BLOCK(d_a,dbl_mb(k_a),dima,int_mb(k_a_offset),(h2b_1
      & - 1 + noab * (h1b_1 - 1 + noab * (p6b_1 - noab - 1 + nvab * (p5b_
      &1 - noab - 1)))))
-ccx      CALL TCE_SORT_4(dbl_mb(k_a),dbl_mb(k_a_sort),int_mb(k_range+p5b-1)
+ccx      CALL tpi_sort_4(dbl_mb(k_a),dbl_mb(k_a_sort),int_mb(k_range+p5b-1)
 ccx     &,int_mb(k_range+p6b-1),int_mb(k_range+h1b-1),int_mb(k_range+h2b-1)
 ccx     &,4,3,2,1,1.0d0)
 ccx      IF (.not.MA_POP_STACK(l_a)) CALL ERRQUIT('icsd_t2_8',3,MA_ERR)
@@ -126,7 +126,7 @@ ccx     & ERRQUIT('icsd_t2_8',4,MA_ERR)
      & - 1 + (noab+nvab) * (p5b_2 - 1 + (noab+nvab) * (p4b_2 - 1 + (noab
      &+nvab) * (p3b_2 - 1)))),p6b_2,p5b_2,p4b_2,p3b_2)
       end if
-ccx      CALL TCE_SORT_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+p3b-1)
+ccx      CALL tpi_sort_4(dbl_mb(k_b),dbl_mb(k_b_sort),int_mb(k_range+p3b-1)
 ccx     &,int_mb(k_range+p4b-1),int_mb(k_range+p5b-1),int_mb(k_range+p6b-1)
 ccx     &,2,1,4,3,1.0d0)
 ccx      IF (.not.MA_POP_STACK(l_b)) CALL ERRQUIT('icsd_t2_8',6,MA_ERR)
@@ -138,9 +138,10 @@ ccx      IF (.not.MA_POP_STACK(l_b)) CALL ERRQUIT('icsd_t2_8',6,MA_ERR)
       ELSE
       isuperp = isuperp + 1
       END IF
-ccx      CALL DGEMM('T','N',dima_sort,dimb_sort,dim_common,2.0d0/FACTORIAL(
-ccx     &nsuperp(1))/FACTORIAL(nsuperp(2)),dbl_mb(k_a_sort),dim_common,dbl_
-ccx     &mb(k_b_sort),dim_common,1.0d0,dbl_mb(k_c_sort),dima_sort)
+ccx      CALL tpi_dgemm('T','N',dima_sort,dimb_sort,dim_common,
+ccx     &2.0d0/FACTORIAL(nsuperp(1))/FACTORIAL(nsuperp(2)),
+ccx     &dbl_mb(k_a_sort),dim_common,dbl_mb(k_b_sort),dim_common,1.0d0,
+ccx     &dbl_mb(k_c_sort),dima_sort)
 ccx      IF (.not.MA_POP_STACK(l_b_sort)) CALL ERRQUIT('icsd_t2_8',7,MA_ERR
 ccx     &)
 c
@@ -161,7 +162,7 @@ c
       END DO
 ccx      IF (.not.MA_PUSH_GET(mt_dbl,dimc,'noname',l_c,k_c)) CALL ERRQUIT('
 ccx     &icsd_t2_8',9,MA_ERR)
-ccx      CALL TCE_SORT_4(dbl_mb(k_c_sort),dbl_mb(k_c),int_mb(k_range+p4b-1)
+ccx      CALL tpi_sort_4(dbl_mb(k_c_sort),dbl_mb(k_c),int_mb(k_range+p4b-1)
 ccx     &,int_mb(k_range+p3b-1),int_mb(k_range+h2b-1),int_mb(k_range+h1b-1)
 ccx     &,2,1,4,3,1.0d0/2.0d0)
       CALL ADD_HASH_BLOCK(d_c,dbl_mb(k_c),dimc,int_mb(k_c_offset),(h2b -
@@ -182,13 +183,13 @@ c ----------------
       END DO
       END DO
       END DO
-c old way      next = NXTASK(-nprocs, 1)
-c old way      call GA_SYNC()
+c old way      next = tpisynxt(nprocs, 1)
+c old way      call tpi_ga_sync()
  9020 format('  T2 GA',i4,1x,'Cpu  wall ',2(f17.12,1x),1x,4i4,2x,i10)
  9021 format('  V2 GA',i4,1x,'Cpu  wall ',2(f17.12,1x),1x,4i4,2x,i10)
  9022 format('  TRANS',i4,1x,'Cpu  wall ',2(f17.12,1x))  
  9023 format('  SORT ',i4,1x,'Cpu  wall ',2(f17.12,1x))
- 9024 format('  DGEMM',i4,1x,'Cpu  wall ',2(f17.12,1x))
+ 9024 format('  tpi_dgemm',i4,1x,'Cpu  wall ',2(f17.12,1x))
  9025 format(' ADD_BL',i4,1x,'Cpu  wall ',2(f17.12,1x))
       RETURN
       END

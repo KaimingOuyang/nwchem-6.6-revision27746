@@ -688,7 +688,7 @@ ccx      if(ires.ne.int_mb(k_v2_alpha_offset+addr)) then
       end if
 c -------------------
 c
-c read offset -> open small file -> fill it  -> ga_acc
+c read offset -> open small file -> fill it  -> tpi_ga_acc
 c
 ccx      offset_ijkl = int_mb(k_v2_alpha_offset+length+addr)
       offset_ijkl = int_mb(k_aux+length+addr)
@@ -737,7 +737,7 @@ c        call util_flush(6)
 c
          xoffset_p34 = int_mb(k_gpair+len_pair+point_pair)
 c
-c         call ga_acc(d_v2,xoffset_p34+1,xoffset_p34+size_g3g4,1,1,
+c         call tpi_ga_acc(d_v2,xoffset_p34+1,xoffset_p34+size_g3g4,1,1,
 c     1               dbl_mb(k_p34),1,1.0d0) 
 c
          call put_block(d_v2,dbl_mb(k_p34),size_g3g4,xoffset_p34)

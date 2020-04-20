@@ -54,7 +54,7 @@ c Add (epsilon_a-epsilon_i)*trial vector diagonal elements
 c --------------------------------------------------------
 c
       iproc=ga_nodeid()
-      call ga_sync()
+      call tpi_ga_sync()
 c
       do i=1,ipol
        call ga_distribution(g_trials(i),iproc,ilo,ihi,jlo,jhi)
@@ -66,8 +66,8 @@ c
              k=mod(l-1,nmo(i)-nfv(i)-nocc(i))+nocc(i)+1
           end if
           j=(l-k+nocc(i))/(nmo(i)-nfv(i)-nocc(i))+nfc(i)+1
-          call ga_get(g_trials(i),l,l,ivector,ivector,t,1)
-          call ga_get(g_prod_s(i),l,l,ivector,ivector,p,1)
+          call tpi_ga_get(g_trials(i),l,l,ivector,ivector,t,1)
+          call tpi_ga_get(g_prod_s(i),l,l,ivector,ivector,p,1)
           evl_diff = evl(nmo(i),i)-evl(1,i)  ! span the eigenvalues
           if (lecut) then
             if (evl(j,i).le.ecut) then
@@ -85,11 +85,11 @@ c
             evl_diff = evl(k,i)-evl(j,i)
           endif
           p=p+(evl_diff)*t
-          call ga_put(g_prod_s(i),l,l,ivector,ivector,p,1)
+          call tpi_ga_put(g_prod_s(i),l,l,ivector,ivector,p,1)
         enddo
        endif ! jlo, jhi check
       enddo
-      call ga_sync()
+      call tpi_ga_sync()
 c
 c ------
 c Return

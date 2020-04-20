@@ -25,6 +25,7 @@ dasum      yasum
 daxpy      yaxpy         
 dcopy      ycopy         
 ddot       ydot          
+tpi_dgemm  tpi_ygemm     
 dgemm      ygemm         
 dgemv      ygemv         
 dger       yger          
@@ -212,6 +213,7 @@ daxpy_     yaxpy_
 dcopy_     ycopy_        
 ddot_      ydot_         
 dgemm_     ygemm_        
+tpi_dgemm_ tpi_ygemm_    
 dgemv_     ygemv_        
 dger_      yger_         
 dnrm2_     ynrm2_        

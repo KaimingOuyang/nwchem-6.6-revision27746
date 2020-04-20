@@ -97,7 +97,7 @@ c Daniel (2-19-13): Code for testing <S**2> expectation values.
      2  call errquit(pname//'failed to allocate s2saved', 0,
      3    MA_ERR)
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c
       if (oroot) then
         if (ipol.eq.1) then
@@ -166,7 +166,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                         ihi(1) = k
                         ihi(2) = l
                         ihi(3) = m
-                        call nga_put(g_xpy(1),ilo,ihi,r,ld)
+                        call tpi_nga_put(g_xpy(1),ilo,ihi,r,ld)
                       endif
                     enddo
                   enddo
@@ -181,7 +181,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                           ihi(1) = k
                           ihi(2) = l
                           ihi(3) = m
-                          call nga_put(g_xmy(1),ilo,ihi,r,ld)
+                          call tpi_nga_put(g_xmy(1),ilo,ihi,r,ld)
                         endif
                       enddo
                     enddo
@@ -256,7 +256,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                         ihi(1) = k
                         ihi(2) = l
                         ihi(3) = m
-                        call nga_put(g_xpy(1),ilo,ihi,r,ld)
+                        call tpi_nga_put(g_xpy(1),ilo,ihi,r,ld)
                       endif
                     enddo
                   enddo
@@ -271,7 +271,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                           ihi(1) = k
                           ihi(2) = l
                           ihi(3) = m
-                          call nga_put(g_xmy(1),ilo,ihi,r,ld)
+                          call tpi_nga_put(g_xmy(1),ilo,ihi,r,ld)
                         endif
                       enddo
                     enddo
@@ -346,7 +346,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                           ihi(1) = k
                           ihi(2) = l
                           ihi(3) = m
-                          call nga_put(g_xpy(j),ilo,ihi,r,ld)
+                          call tpi_nga_put(g_xpy(j),ilo,ihi,r,ld)
                         endif
                       enddo
                     enddo
@@ -363,7 +363,7 @@ c Daniel (2-19-13): This is the <S**2> value.
                             ihi(1) = k
                             ihi(2) = l
                             ihi(3) = m
-                            call nga_put(g_xmy(j),ilo,ihi,r,ld)
+                            call tpi_nga_put(g_xmy(j),ilo,ihi,r,ld)
                           endif
                         enddo
                       enddo
@@ -398,7 +398,7 @@ c      endif
 c
 c     Broadcast status
       ok =1
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_brdcst(Msg_Vec_Stat+MSGINT, ok, inntsize, 0)
 c
 c Daniel (2-19-13): Deallocate local arrays.

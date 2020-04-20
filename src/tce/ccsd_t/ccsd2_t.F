@@ -37,7 +37,7 @@ C
       integer k_left_sorted,l_left_sorted
       integer size,i
       integer g_energy
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -53,7 +53,7 @@ c - T1/X1 LOCALIZATION -------------------
 c ---------------------------------------
       double precision energy
       double precision factor
-      external nxtask
+      external tpinxt,tpisynxt
 c
 c - T1/X1 LOCALIZATION ----------
 c    opening l_t1_local and l_x1_local
@@ -62,7 +62,7 @@ c    opening l_t1_local and l_x1_local
      1      call errquit('t1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 c    copy d_t1 ==> l_t1_local
-        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
 c -------------------------------
 c
 c
@@ -85,7 +85,7 @@ c
      1  call errquit('ccsd_t: GA problem',0,GA_ERR)
       nprocs = GA_NNODES()
       count = 0
-      next = nxtask(nprocs,1)
+      next = tpinxt(nprocs,1)
       energy=0.0d0
       do t_p4b = noab+1,noab+nvab
        do t_p5b = t_p4b,noab+nvab
@@ -142,7 +142,7 @@ c
      2        k_i1_offset_4,k_i1_offset_5,k_t1_offset,k_v2_offset,
      3        k_y1_offset,k_y2_offset,l_i1_offset_3,l_i1_offset_4,
      4        l_i1_offset_5,t_h1b,t_h2b,t_h3b,t_p4b,t_p5b,t_p6b,2)
-            call tce_sort_6(dbl_mb(k_left),dbl_mb(k_left_sorted),
+            call tpi_sort_6(dbl_mb(k_left),dbl_mb(k_left_sorted),
      1        int_mb(k_range+t_h1b-1),int_mb(k_range+t_h2b-1),
      2        int_mb(k_range+t_h3b-1),int_mb(k_range+t_p4b-1),
      3        int_mb(k_range+t_p5b-1),int_mb(k_range+t_p6b-1),
@@ -190,7 +190,7 @@ c
      1        call errquit('ccsd_t',6,MA_ERR)
             if (.not.MA_POP_STACK(l_right)) 
      1        call errquit('ccsd_t',6,MA_ERR)
-            next = nxtask(nprocs,1)
+            next = tpinxt(nprocs,1)
             endif
             count = count + 1
             endif
@@ -202,7 +202,7 @@ c
         enddo
        enddo
       enddo
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
       call ccsd2_t_left(dbl_mb(k_left),d_f1,d_i1_3,d_i1_4,d_i1_5,
      1  d_t1,d_v2,d_y1,d_y2,k_f1_offset,k_i1_offset_3,
      2  k_i1_offset_4,k_i1_offset_5,k_t1_offset,k_v2_offset,
@@ -213,9 +213,9 @@ c
      2  k_t1_offset,k_t2_offset,k_v2_offset,l_i1_offset_1,
      3  l_i1_offset_2,t_h1b,t_h2b,t_h3b,t_p4b,t_p5b,t_p6b,3)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,energy,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,energy,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,energy,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,energy,1)
       if (.not.ga_destroy(g_energy))
      1  call errquit('ccsd_t: GA problem',1,GA_ERR)
 c - T1/X1 LOCALIZATION ------

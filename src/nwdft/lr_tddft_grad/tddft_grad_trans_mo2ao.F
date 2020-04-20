@@ -99,7 +99,7 @@ c
 c
 c     What is the dimensionality of g_mao?
 c
-c     call ga_sync()
+c     call tpi_ga_sync()
       ndimao = GA_Ndim(g_mao)
       if (ndimao.eq.2) then
         iroot = nroot
@@ -281,7 +281,7 @@ c
         enddo
       enddo
 c
-c     call ga_sync()
+c     call tpi_ga_sync()
       if (.not.ga_destroy(g_diu)) call errquit
      +   ('tddft_grad_trans_mo2ao: failed to destroy g_diu',0, GA_ERR)
 c

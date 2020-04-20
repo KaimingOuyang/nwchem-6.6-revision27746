@@ -101,7 +101,7 @@ c
       integer nshells_ao,nshells_cd,ishp,ishq
       integer ifirstq, ilastq, ifirstp, ilastp,nshbfq,nshbfp,Nao2
       integer Nintegrals,ishd,ifirstd,ilastd,nshbfd
-      integer iat,next,nxtask,icart,l_dfkl,k_dfkl
+      integer iat,next,nxtask,tpinxt,tpisynxt,icart,l_dfkl,k_dfkl
       integer iatom,ishatf,ishatl
       integer atom_p,atom_q
       integer sh_lo_p,sh_hi_p, sh_lo_q, sh_hi_q
@@ -119,7 +119,7 @@ c
       character*(nw_max_path_len) cdfit
 c
       double precision dabsmax
-      external nxtask,schwarz_shell,dabsmax
+      external nxtask,tpinxt,tpisynxt,schwarz_shell,dabsmax
       nproc  = ga_nnodes()
       me = ga_nodeid()
 c
@@ -208,7 +208,7 @@ c
 c     sort atoms list based on decreasing atomic weight
       call dft_sortatbyz(geom,nat,int_mb(k_at))
 c
-      next = nxtask(nproc,1) + 1
+      next = tpinxt(nproc,1) + 1
       icount_task=1
 c
       do atom_p_in=1,nat
@@ -226,7 +226,7 @@ c
      &          call errquit('Exiting in dft_fitcd',110, BASIS_ERR)
            nbf_at_q=bf_hi_q - bf_lo_q + 1
 
-               call ga_get(iga_dens, bf_lo_q, bf_hi_q, 
+               call tpi_ga_get(iga_dens, bf_lo_q, bf_hi_q, 
      C              bf_lo_p,bf_hi_p,
      C              dbl_mb(k_p), 
      B              (bf_hi_q - bf_lo_q + 1))
@@ -364,13 +364,13 @@ c
             enddo ! ishq
             icount_p=icount_p+nshbfp
       enddo                     ! ishp
-      next = nxtask(nproc,1) + 1
+      next = tpinxt(nproc,1) + 1
       endif
       icount_task=icount_task+1
       enddo                     ! atom_q
       enddo                     ! atom_p
 c
-      next = nxtask(-nproc,1)
+      next = tpisynxt(-nproc,1)
 c
       if (.not.MA_chop_stack(l_p))
      &     call errquit('dftg_cdfit_gen: cannot pop l_p',1, MA_ERR)
@@ -389,7 +389,7 @@ c
       igran = (nshells_ao + mod(nshells_ao,2))/(4*nproc)
       igran = max(1,igran)
 c
-      next = nxtask(nproc,igran) + 1
+      next = tpinxt(nproc,igran) + 1
 c
 c     Since 2e2c integral derivatives are zero unless the centers
 c     involved are different, the loops are set up to run only over
@@ -403,7 +403,7 @@ c
 c
          if (ishp.eq.next)then
 c
-            next = nxtask(nproc,igran) + 1
+            next = tpinxt(nproc,igran) + 1
 c
             if (.not. bas_cn2bfr(CD_bas_han,ishp,ifirstp,ilastp))
      &         call errquit('Exiting in dftg_cdfit_gen.',9, BASIS_ERR)
@@ -480,7 +480,7 @@ c
  305  continue
  304  continue
 c
-      next=nxtask(-nproc,igran)
+      next=tpisynxt(-nproc,igran)
 c
       if (do_cpks_r) then
          write(*,*)'*** Do global sum of db'

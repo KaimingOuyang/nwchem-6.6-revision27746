@@ -193,7 +193,7 @@ c     calculate volumes and moments using the dft grid
      &        dum1,.false.,.false.)
          call ga_dgop(msg_xdm1,v,ntypes,'+')
          call ga_dgop(msg_xdm3,ml,3*ntypes,'+')
-         call ga_sync()
+         call tpi_ga_sync()
 
          do i = 1, ntypes
 c     skip ghost atoms
@@ -368,7 +368,7 @@ c     bit needed for forces
          endif
          write (luout,*)
       endif
-      call ga_sync()
+      call tpi_ga_sync()
       return
       end
 

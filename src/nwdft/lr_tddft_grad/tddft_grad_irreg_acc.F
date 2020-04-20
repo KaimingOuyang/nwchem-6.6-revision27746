@@ -117,7 +117,7 @@ c
 c             Accumulate this block of consequetive data onto the global
 c             array
 c
-              call nga_acc(g_g(i),ilo,ihi,buf,ld,1.0d0)
+              call tpi_nga_acc(g_g(i),ilo,ihi,buf,ld,1.0d0)
 c
             enddo
 c
@@ -157,7 +157,7 @@ c
 c           Accumulate this block of consequetive data onto the global
 c           array
 c
-            call nga_acc(g_g,ilo,ihi,buf,ld,1.0d0)
+            call tpi_nga_acc(g_g,ilo,ihi,buf,ld,1.0d0)
 c
           enddo
         enddo

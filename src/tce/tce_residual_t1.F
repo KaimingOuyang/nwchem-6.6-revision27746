@@ -70,7 +70,7 @@ cc      next = nxtval(nprocs)
      1          print_debug)) call ma_print_compact
      2          (dbl_mb(k_r1),size,1,'t1 residual')
               residual = ddot(size,dbl_mb(k_r1),1,dbl_mb(k_r1),1)
-              call ga_acc(g_residual,1,1,1,1,residual,1,1.0d0)
+              call tpi_ga_acc(g_residual,1,1,1,1,residual,1,1.0d0)
               if (.not.ma_pop_stack(l_r1))
      1          call errquit('tce_residual_t1: MA problem',1,MA_ERR)
             endif
@@ -174,7 +174,7 @@ cc      next = nxtval(nprocs)
      1          print_debug)) call ma_print_compact
      2          (dbl_mb(k_r1),size,1,'tr1 residual')
               residual = ddot(size,dbl_mb(k_r1),1,dbl_mb(k_r1),1)
-              call ga_acc(g_residual,1,1,1,1,residual,1,1.0d0)
+              call tpi_ga_acc(g_residual,1,1,1,1,residual,1,1.0d0)
               if (.not.ma_pop_stack(l_r1))
      1          call errquit('tce_residual_tr1: MA problem',1,MA_ERR)
             endif

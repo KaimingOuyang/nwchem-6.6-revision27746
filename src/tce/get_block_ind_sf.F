@@ -257,12 +257,12 @@ c===================================================================c
 c 
 c         OLD CALL
 c
-c         call ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
+c         call tpi_ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
 c     1         dbl_mb(k_a),1)
 c
 c         EXAMPLE FROM GET_BLOCK(...)
 c
-c        call ga_get(d_file,offset+1,offset+size,1,1,
+c        call tpi_ga_get(d_file,offset+1,offset+size,1,1,
 c     1    array,1)
 c
 c===================================================================c
@@ -492,12 +492,12 @@ c===================================================================c
 c
 c         OLD CALL
 c
-c         call ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
+c         call tpi_ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
 c     1         dbl_mb(k_a),1)
 c
 c         EXAMPLE FROM GET_BLOCK(...)
 c
-c        call ga_get(d_file,offset+1,offset+size,1,1,
+c        call tpi_ga_get(d_file,offset+1,offset+size,1,1,
 c     1    array,1)
 c
 c===================================================================c
@@ -919,12 +919,12 @@ c===================================================================c
 c
 c         OLD CALL
 c
-c         call ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
+c         call tpi_ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
 c     1         dbl_mb(k_a),1)
 c
 c         EXAMPLE FROM GET_BLOCK(...)
 c
-c        call ga_get(d_file,offset+1,offset+size,1,1,
+c        call tpi_ga_get(d_file,offset+1,offset+size,1,1,
 c     1    array,1)
 c
 c===================================================================c
@@ -1158,12 +1158,12 @@ c===================================================================c
 c
 c         OLD CALL
 c
-c         call ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
+c         call tpi_ga_get(d_file,offset_alpha+1,offset_alpha+size,1,1,
 c     1         dbl_mb(k_a),1)
 c
 c         EXAMPLE FROM GET_BLOCK(...)
 c
-c        call ga_get(d_file,offset+1,offset+size,1,1,
+c        call tpi_ga_get(d_file,offset+1,offset+size,1,1,
 c     1    array,1)
 c
 c===================================================================c

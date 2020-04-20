@@ -94,8 +94,8 @@ C-------------------------local variables-----------------------------
       integer  next, nint, ijklblock
       double precision scale, q4max
 
-      integer nxtask, task_size
-      external nxtask
+      integer nxtask,tpinxt,tpisynxt,task_size
+      external nxtask,tpinxt,tpisynxt
 
       double precision psum
       integer i, j, k, l
@@ -191,7 +191,7 @@ c
 c     Parallel loop over quartets of reordered shell blocks
 c     
       ijklblock = 0
-      next = nxtask(nproc,task_size)
+      next = tpinxt(nproc,task_size)
       do ishblock = nshblocks, 1, -1
          ishlo = shglo(ishblock)
          ishhi = shghi(ishblock)
@@ -437,7 +437,7 @@ c
                      end if
                      if (omore) goto 10
 c     
-                     next = nxtask(nproc,task_size)
+                     next = tpinxt(nproc,task_size)
                   end if
 c     
                   ijklblock = ijklblock + 1
@@ -449,8 +449,8 @@ c
 c
       call int_acc_std()
 c
-      next = nxtask(-nproc,task_size)
-      call ga_sync()
+      next = tpisynxt(-nproc,task_size)
+      call tpi_ga_sync()
 c     
 *      write(6,*) ' numq ', numq
 c     

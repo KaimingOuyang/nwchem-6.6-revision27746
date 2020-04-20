@@ -40,7 +40,7 @@ C
       integer hole_p_1
       integer hole_p_2
 c
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -56,7 +56,7 @@ c ---------------------------------------
       double precision energy5,energy6
       double precision factor
       double precision den0,den1,den2,den3,num1,num2
-      external nxtask
+      external tpinxt,tpisynxt
 c
       k_right = 0
       k_den = 0
@@ -68,7 +68,7 @@ c    opening l_t1_local and l_x1_local
      1      call errquit('t1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 c    copy d_t1 ==> l_t1_local
-cc        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+cc        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
 c -------------------------------
 c
@@ -112,7 +112,7 @@ c
      1  call errquit('ccsd_t: GA problem',0,GA_ERR)
       nprocs = GA_NNODES()
       count = 0
-      next = nxtask(nprocs,1)
+      next = tpinxt(nprocs,1)
       num1=0.0d0 !for <S3(M3)+ M3>/(1+L(J3))
       num2=0.0d0 !for <(S3(M3)+S1S2)+M3>/(1+L(J3))
       den0=0.0d0  !for <T3[2]+M3>/(1+L(J3))
@@ -350,7 +350,7 @@ c den3 => <(T3[2]+S1S2)+R03 M3[2]>/(1+L(J3))
 cccx            if (.not.MA_POP_STACK(l_singles)) 
 cccx     1        call errquit('ccsd_t',8,MA_ERR)
 c
-            next = nxtask(nprocs,1)
+            next = tpinxt(nprocs,1)
             endif
             count = count + 1
 c
@@ -363,7 +363,7 @@ c
         enddo
        enddo
       enddo
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
       call cr_ccsd_t_E(dbl_mb(k_den),d_i1_3,
      1  k_t1_local,d_t2,k_i1_offset_3,k_t1_offset,k_t2_offset,
      2  l_i1_offset_3,t_h1b,t_h2b,t_h3b,t_p4b,t_p5b,t_p6b,3)
@@ -372,29 +372,29 @@ c
      2  k_t1_offset,k_t2_offset,k_v2_offset,l_i1_offset_1,
      3  l_i1_offset_2,t_h1b,t_h2b,t_h3b,t_p4b,t_p5b,t_p6b,3)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,num1,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,num1,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,num1,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,num1,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,num2,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,num2,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,num2,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,num2,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,den0,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,den0,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,den0,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,den0,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,den1,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,den1,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,den1,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,den1,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,den2,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,den2,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,den2,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,den2,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,den3,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,den3,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,den3,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,den3,1)
 c
       if (.not.ga_destroy(g_energy))
      1  call errquit('ccsd_t: GA problem',1,GA_ERR)

@@ -149,7 +149,7 @@ c ============== debug g_ax ==================== START
        enddo ! end-loop-ipm
        endif ! end-if-lifetime
       endif ! end-if-debug
-      call ga_sync()
+      call tpi_ga_sync()
 
 c       next: add (e_a - e_i) times A (also called U) matrix to Ax
         do ipm=1,ncomp

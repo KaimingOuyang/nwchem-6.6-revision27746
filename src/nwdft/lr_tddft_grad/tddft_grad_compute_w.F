@@ -188,7 +188,8 @@ c
             bhi(3) = i
             ld(1)  = 1
             ld(2)  = 1
-            call nga_acc(g_w(ip),blo,bhi,(3-ipol)*eps(imo,ip),ld,1.0d0)
+            call tpi_nga_acc(g_w(ip),blo,bhi,(3-ipol)*eps(imo,ip),
+     +                       ld,1.0d0)
           enddo
          enddo
         endif ! doitw
@@ -265,7 +266,7 @@ c
      +      call errquit(pname//'failed to allocate blockb',0,MA_ERR)
            ld(1)  = nroots
            ld(2)  = numj
-           call nga_get(g_xpy(ip),blo,bhi,dbl_mb(iptr_b),ld)
+           call tpi_nga_get(g_xpy(ip),blo,bhi,dbl_mb(iptr_b),ld)
            ic = 0
            do a = 1, numa
              do j = 1, numj
@@ -298,7 +299,7 @@ c             ahi(3) = maxa
      +         call errquit(pname//'failed to allocate blockr',0,UERR)
               ld(1)  = nroots
               ld(2)  = numi
-              call nga_get(g_xpy(ip),alo,ahi,dbl_mb(iptr_a),ld)
+              call tpi_nga_get(g_xpy(ip),alo,ahi,dbl_mb(iptr_a),ld)
               call dfill(nroots*numi*numj,0.0d0,dbl_mb(iptr_r),1)
               do a = 0, numa-1
                 do j = 0, numj-1
@@ -328,7 +329,7 @@ c less messy.
               chi(3) = maxj
               ld(1) = nroots
               ld(2) = numi
-              call nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
+              call tpi_nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
               if (.not.ma_pop_stack(ihdl_r)) 
      +         call errquit(pname//'failed to deallocate blockr',0,UERR)
               if (.not.ma_pop_stack(ihdl_a)) 
@@ -341,7 +342,7 @@ c
      +         call errquit(pname//'failed to deallocate blockb',0,UERR)
            endif ! doitxpy1 
 
-          call ga_sync()
+          call tpi_ga_sync()
 c
           if (.not.tda) then
 c
@@ -363,7 +364,7 @@ c
      +        call errquit(pname//'failed to allocate blockb',0,UERR)
              ld(1)  = nroots
              ld(2)  = numj
-             call nga_get(g_xmy(ip),blo,bhi,dbl_mb(iptr_b),ld)
+             call tpi_nga_get(g_xmy(ip),blo,bhi,dbl_mb(iptr_b),ld)
              ic = 0
              do a = 1, numa
               do i = 1, numj
@@ -396,7 +397,7 @@ c               ahi(3) = maxa
      +           call errquit(pname//'failed to allocate blockr',0,UERR)
                 ld(1)  = nroots
                 ld(2)  = numi
-                call nga_get(g_xmy(ip),alo,ahi,dbl_mb(iptr_a),ld)
+                call tpi_nga_get(g_xmy(ip),alo,ahi,dbl_mb(iptr_a),ld)
                 call dfill(nroots*numi*numj,0.0d0,dbl_mb(iptr_r),1)
                 do a = 0, numa-1
                   do i = 0, numi-1
@@ -418,7 +419,8 @@ c               ahi(3) = maxa
                 chi(3) = maxj
                 ld(1) = nroots
                 ld(2) = numi
-                call nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
+                call tpi_nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),
+     +                           ld,1.0d0)
                 if (.not.ma_pop_stack(ihdl_r)) 
      +            call errquit(pname//'failed to deallocate blockr',0,
      +              UERR)
@@ -433,7 +435,7 @@ c
      +        call errquit(pname//'failed to deallocate blockb',0,UERR)
             endif ! doitxmy1
 c
-          call ga_sync()
+          call tpi_ga_sync()
 c
           endif ! tda
 c
@@ -589,7 +591,7 @@ c
             int_mb(k_den2+i+ip*(nroots+1)) = int_mb(k_dens+ip+ipol*i)
           enddo
         enddo
-        call ga_sync()
+        call tpi_ga_sync()
 c Daniel (2-12-13): We need to set triplet here for fock_xc.
         if (otriplet) then
           if (.not.rtdb_put(rtdb,'fock_xc:triplet',mt_log,1,otriplet))
@@ -597,7 +599,7 @@ c Daniel (2-12-13): We need to set triplet here for fock_xc.
         endif
         call fock_xc(ihdl_geom, nao, ihdl_bfao, ngxc, int_mb(k_den2),
      +               int_mb(k_gxc), Exc, ipol, .false.)
-        call ga_sync()
+        call tpi_ga_sync()
 c DEBUG
       if (tddft_grad_util_print('tddft grad w',print_debug)) then
         oroot = ga_nodeid().eq.0
@@ -668,7 +670,7 @@ c
      +   call errquit(pname//'failed to allocate block v',0, UERR)
          ld(1) = nroots
          ld(2) = numi
-         call nga_get(g_z(ip),alo,ahi,dbl_mb(iptr_v),ld)
+         call tpi_nga_get(g_z(ip),alo,ahi,dbl_mb(iptr_v),ld)
          do a = 0, numa-1
           do i = 0, numi-1
             imo = nfc(ip)+mini+i
@@ -681,7 +683,7 @@ c
          enddo
         alo(3) = naoc(ip)+mina
         ahi(3) = naoc(ip)+maxa
-        call nga_put(g_w(ip),alo,ahi,dbl_mb(iptr_v),ld)
+        call tpi_nga_put(g_w(ip),alo,ahi,dbl_mb(iptr_v),ld)
         if (.not.ma_pop_stack(ihdl_v)) 
      +    call errquit(pname//'failed to deallocate block v',0, UERR)
        endif ! doitz 
@@ -980,7 +982,7 @@ c
      +      call errquit(pname//'failed to allocate blockb',0,UERR)
            ld(1)  = nroots
            ld(2)  = numi
-           call nga_get(g_xpy(ip),blo,bhi,dbl_mb(iptr_b),ld)
+           call tpi_nga_get(g_xpy(ip),blo,bhi,dbl_mb(iptr_b),ld)
            ic = 0
            do b = 1, numb
             do i = 1, numi
@@ -1013,7 +1015,7 @@ c
      +      call errquit(pname//'failed to allocate blockr',0, MA_ERR)
             ld(1)  = nroots
             ld(2)  = numi
-            call nga_get(g_xpy(ip),alo,ahi,dbl_mb(iptr_a),ld)
+            call tpi_nga_get(g_xpy(ip),alo,ahi,dbl_mb(iptr_a),ld)
             call dfill(nroots*numa*numb,0.0d0,dbl_mb(iptr_r),1)
             do b = 0, numb-1
               do a = 0, numa-1
@@ -1042,7 +1044,7 @@ c less messy.
             chi(3) = naoc(ip)+maxb
             ld(1) = nroots
             ld(2) = numa
-            call nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
+            call tpi_nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
             if (.not.ma_pop_stack(ihdl_r)) 
      +       call errquit(pname//'failed to deallocate blockr',0,MA_ERR)
             if (.not.ma_pop_stack(ihdl_a)) 
@@ -1055,7 +1057,7 @@ c
      +      call errquit(pname//'failed to deallocate blockb',0,MA_ERR)
           endif  ! doitxpy1
 c
-          call ga_sync()
+          call tpi_ga_sync()
 c
           if (.not.tda) then
 c
@@ -1077,7 +1079,7 @@ c
      +      call errquit(pname//'failed to allocate blockb',0,UERR)
            ld(1)  = nroots
            ld(2)  = numi
-           call nga_get(g_xmy(ip),blo,bhi,dbl_mb(iptr_b),ld)
+           call tpi_nga_get(g_xmy(ip),blo,bhi,dbl_mb(iptr_b),ld)
            ic = 0
            do b = 1, numb
             do i = 1, numi
@@ -1110,7 +1112,7 @@ c
      +      call errquit(pname//'failed to allocate blockr',0, UERR)
             ld(1)  = nroots
             ld(2)  = numi
-            call nga_get(g_xmy(ip),alo,ahi,dbl_mb(iptr_a),ld)
+            call tpi_nga_get(g_xmy(ip),alo,ahi,dbl_mb(iptr_a),ld)
             call dfill(nroots*numa*numb,0.0d0,dbl_mb(iptr_r),1)
             do b = 0, numb-1
               do a = 0, numa-1
@@ -1132,7 +1134,7 @@ c
             chi(3) = naoc(ip)+maxb
             ld(1) = nroots
             ld(2) = numa
-            call nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
+            call tpi_nga_acc(g_w(ip),clo,chi,dbl_mb(iptr_r),ld,1.0d0)
             if (.not.ma_pop_stack(ihdl_r)) 
      +      call errquit(pname//'failed to deallocate blockr',0,MA_ERR)
             if (.not.ma_pop_stack(ihdl_a)) 
@@ -1145,7 +1147,7 @@ c
      +       call errquit(pname//'failed to deallocate blockb',0,MA_ERR)
           endif !doitxmy1
 
-          call ga_sync()
+          call tpi_ga_sync()
 
           endif  ! tda
 c
@@ -1190,7 +1192,7 @@ c
         if (.not.ga_destroy(g_t))
      +     call errquit(pname//'failed to destroy g_t',0,GA_ERR)
       enddo
-      call ga_sync()
+      call tpi_ga_sync()
 c
       if (tddft_grad_util_print('tddft grad w',print_debug)) then
         oroot = ga_nodeid().eq.0

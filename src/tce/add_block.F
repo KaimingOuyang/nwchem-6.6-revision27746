@@ -103,7 +103,7 @@ c
         if (.not.ma_pop_stack(l_temp))
      1    call errquit('add_block: MA problem',0,MA_ERR)
       else if (ioalg.eq.2) then
-        call ga_acc(d_file,offset+1,offset+size,1,1,
+        call tpi_ga_acc(d_file,offset+1,offset+size,1,1,
      1    array,1,1.0d0)
       else if (ioalg.eq.3) then
         if (.not.ma_push_get(mt_dbl,size,'temporary',
@@ -151,7 +151,7 @@ c
      1    call errquit('add_block: MA problem',0,MA_ERR)
       else if (ioalg.eq.5) then
         if (fileisga(d_file)) then
-          call ga_acc(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_acc(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1,1.0d0)
         else
           call errquit('add_block: read/write requests to DRA',0,
@@ -159,7 +159,7 @@ c
         endif
       else if (ioalg.eq.6) then
         if (fileisga(d_file)) then
-          call ga_acc(filehandles(d_file),offset+1,offset+size,1,1,
+          call tpi_ga_acc(filehandles(d_file),offset+1,offset+size,1,1,
      1      array,1,1.0d0)
         else
           if (.not.ma_push_get(mt_dbl,size,'temporary',

@@ -457,7 +457,7 @@ cso
                write(6,*) ' grad_force_so: ', 'density matrix'
                call util_flush(6)
             endif
-            call ga_sync()
+            call tpi_ga_sync()
             call errquit('grad_force_so: ga_create ', 0, GA_ERR)
          endif
       end do
@@ -996,7 +996,7 @@ c
       call schwarz_tidy()
       call intd_terminate()
 C     
-      call ga_sync()
+      call tpi_ga_sync()
       call ga_dgop(msg_grad_nuc, dbl_mb(k_frc_nuc), 3*nat, '+')
       call ga_dgop(msg_grad_wgh, dbl_mb(k_frc_wgh), 3*nat, '+')
       call ga_dgop(msg_grad_kin, dbl_mb(k_frc_kin), 3*nat, '+')
@@ -1008,7 +1008,7 @@ C
         call ga_dgop(msg_grad_nuc, dbl_mb(k_frc_2el_k), 3*nat, '+')
       end if ! cam_exch
 c
-      call ga_sync()
+      call tpi_ga_sync()
 c     
       if (ga_nodeid() .eq. 0) then
          status = rtdb_parallel(.false.)
@@ -1121,7 +1121,7 @@ c
 c     
       end if
 c     
-      call ga_sync
+      call tpi_ga_sync
 c     
 
 C     default: print the total forces 
@@ -1157,7 +1157,7 @@ C     print timing information
          call util_flush(luout)
       end if
 c     
-      call ga_sync()
+      call tpi_ga_sync()
 
 C     free memory
 

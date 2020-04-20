@@ -32,7 +32,7 @@ C
       integer k_doubles,l_doubles
 #endif
       integer size,i
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -56,7 +56,7 @@ c ---------------------------------------
       integer n_progr,pct_progr
       parameter(n_progr=20)
       logical i_progr(n_progr)
-      external nxtask,ccsd_t_6tasks
+      external tpinxt,tpisynxt,ccsd_t_6tasks
       logical offload_master
       external offload_master
 C
@@ -68,10 +68,13 @@ c    opening l_t1_local and l_x1_local
      1      call errquit('ccsd_t: t1_local size=',size_t1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 c    copy d_t1 ==> l_t1_local
-ccx        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+ccx        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
 c -------------------------------
 C
+      call tpi_start()
+      call tpi_push_name_level1("ccsd_t")
+      
       nprocs = GA_NNODES()
       energy(1)=0.0d0
       energy(2)=0.0d0
@@ -155,10 +158,10 @@ c      w_thresh=10
       k_grain=min(5,nint((tot_task/15d0)/nprocs))
       k_grain=max(k_grain,1)
       if(ga_nodeid().eq.0) then
-         write(6,*) ' nxtask granularity ',k_grain
+         write(6,*) ' tpinxt granularity ',k_grain
       endif
 #endif
-      next = nxtask(nprocs,k_grain)
+      next = tpinxt(nprocs,k_grain)
       do k=1,n_progr
          i_progr(k)=.true.
       enddo
@@ -196,15 +199,15 @@ c
                   call util_flush(6)
                endif
             endif
-            next = nxtask(nprocs,k_grain)
+            next = tpinxt(nprocs,k_grain)
          endif
          count = count + 1
       enddo
       endif
       if(task_thresh.le.tot_task) then
-      next = nxtask(-nprocs,k_grain)
+      next = tpisynxt(-nprocs,k_grain)
       if(.not.offload_master()) then
-         next = nxtask(nprocs,k_grain)
+         next = tpinxt(nprocs,k_grain)
          count=0
          do k=task_thresh,tot_task
             if (next.eq.count) then
@@ -224,7 +227,7 @@ c
      &                 restricted,k_evl_sorted,size)
 #endif
 c
-               next = nxtask(nprocs,k_grain)
+               next = tpinxt(nprocs,k_grain)
                if(ga_nodeid().eq.2) then
                   pct_progr=(k*n_progr)/tot_task
                   if(i_progr(pct_progr)) then
@@ -272,8 +275,8 @@ c
       if (.not.MA_POP_STACK(l_singles))
      1     call errquit('ccsd_t singles',4,MA_ERR)
 #endif
-      next = nxtask(-nprocs,k_grain)
-c      call ga_sync()
+      next = tpisynxt(-nprocs,k_grain)
+c      call tpi_ga_sync()
       energy(1) = energy1
       energy(2) = energy2
       call ga_mask_sync(.false.,.true.)
@@ -284,6 +287,9 @@ c - T1/X1 LOCALIZATION ------
          if(.not.MA_POP_STACK(l_t1_local))
      &      call errquit('ccsd_t: l_t1_local',4,MA_ERR)
 c ---------------------------
+      call tpi_pop_name_level1("ccsd_t")
+      call tpi_stop()
+      
       return
       end
 

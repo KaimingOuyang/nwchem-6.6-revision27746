@@ -147,7 +147,7 @@ c
      2                    (dbl_mb(k_r4),size,1,'t4 residual')
                         residual = ddot(size,dbl_mb(k_r4),1,
      1                                       dbl_mb(k_r4),1)
-                        call ga_acc(g_residual,1,1,1,1,
+                        call tpi_ga_acc(g_residual,1,1,1,1,
      1                                residual,1,factor)
                         if (.not.ma_pop_stack(l_r4))
      1                    call errquit('tce_residual_t4: MA problem',1,
@@ -324,7 +324,7 @@ c
      2                    (dbl_mb(k_r4),size,1,'tr4 residual')
                         residual = ddot(size,dbl_mb(k_r4),1,
      1                                       dbl_mb(k_r4),1)
-                        call ga_acc(g_residual,1,1,1,1,
+                        call tpi_ga_acc(g_residual,1,1,1,1,
      1                                residual,1,factor)
                         if (.not.ma_pop_stack(l_r4))
      1                    call errquit('tce_residual_tr4: MA problem',1,

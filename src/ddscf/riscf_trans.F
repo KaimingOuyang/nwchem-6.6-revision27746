@@ -38,8 +38,8 @@ C$Id: riscf_trans.F 19707 2010-10-29 17:59:36Z d3y133 $
 
       logical status, IeqJ
 
-      integer nxtask
-      external nxtask
+      integer nxtask,tpinxt,tpisynxt
+      external nxtask,tpinxt,tpisynxt
 
       nproc = ga_nnodes()
 
@@ -55,7 +55,7 @@ C       first collect them in a temporary global array
       icount = -1
       mycount = 0
       ndone = 0
-      next = nxtask(nproc, 1)
+      next = tpinxt(nproc, 1)
       do i=1, nsh
         do j=1, i
           call ga_get (g_indx, i, i, j, j, indx, 1)
@@ -109,10 +109,10 @@ C                 first finish previous write
      $               npair, ndone, g_tmp, req )
 #endif
               else
-                call ga_put (g_three, indx, indx+nij-1,  1, Nff, scr, 
-     $               nij)
+                call tpi_ga_put (g_three, indx, indx+nij-1,  1, Nff,
+     $                           scr, nij)
               endif
-              next = nxtask(nproc, 1)
+              next = tpinxt(nproc, 1)
             endif ! next
           endif ! sparsity
         enddo   ! j
@@ -132,7 +132,7 @@ C       finish last write
       endif
 #endif
 
-      next = nxtask(-nproc, 1)
+      next = tpisynxt(-nproc, 1)
 
       if ( util_print('3c-ints', print_never) ) then
 #ifdef RISCF_USE_DRA

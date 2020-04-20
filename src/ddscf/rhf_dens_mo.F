@@ -133,7 +133,7 @@ c
       call ga_diag_std_seq(g_mofock, g_u, evals )
 #endif
       if (oscfps) call pstat_off(ps_diag)
-      call ga_sync()
+      call tpi_ga_sync()
 c     
       call ga_dgemm('n', 'n', nbf, nmo, nmo, 1.0d0, g_tmp, g_u,
      $     0.0d0, g_mocf)

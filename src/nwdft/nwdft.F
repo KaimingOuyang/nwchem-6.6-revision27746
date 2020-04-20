@@ -15,7 +15,14 @@ c
 c     == Add theory flag ==
       status = rtdb_cput(rtdb,'dft:theory', 1, 'dft')
 c
+      call tpi_start()
+      call tpi_push_name_level1("dft")
+
       dft_energy = nwdft(rtdb)
+
+      call tpi_pop_name_level1("dft")
+      call tpi_stop()
+
       call grid_cleanup(.true.)
 c
       end

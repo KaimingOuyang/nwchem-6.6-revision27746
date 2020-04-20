@@ -33,7 +33,7 @@ c
 c
 c     Code:
 c
-      call ga_sync
+      call tpi_ga_sync
 c
       status = rtdb_parallel(.false.)
 c
@@ -56,7 +56,7 @@ c
           ihi(3) = nat
           ld(1)  = 1
           ld(2)  = 3
-          call nga_get(g_g,ilo,ihi,dbl_mb(k_force),ld)
+          call tpi_nga_get(g_g,ilo,ihi,dbl_mb(k_force),ld)
 c
 c         write(rtdb_string,'("tddft:gradient:",i2)')iroots(ir)
           write(rtdb_string,'("tddft:gradient")')
@@ -73,7 +73,7 @@ c
 c
       endif
 c
-      call ga_sync
+      call tpi_ga_sync
 c
       status = rtdb_parallel(.true.)
 c

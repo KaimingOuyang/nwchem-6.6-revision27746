@@ -54,7 +54,7 @@ C
 C     Pack into buffer. Note pointer vs fortran indexing.
 C
       do i = 1, n
-         call ga_get (g_a, 1, n, i, i, dbl_mb(itmp), n)
+         call tpi_ga_get (g_a, 1, n, i, i, dbl_mb(itmp), n)
          do j = 1, n
             buff(n*(i-1) + j) = dbl_mb(itmp + j - 1)
          enddo
@@ -130,7 +130,7 @@ C
 C     Pack into buffer. Note pointer vs fortran indexing.
 C
       do i = 1, n
-         call ga_get (g_a, 1, n, i, i, dcpl_mb(itmp), n)
+         call tpi_ga_get (g_a, 1, n, i, i, dcpl_mb(itmp), n)
          do j = 1, n
             buff(n*(i-1) + j) = dcpl_mb(itmp + j - 1)
          enddo

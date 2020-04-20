@@ -29,7 +29,7 @@ C
       integer size,i
       integer g_energy
       integer g_total_d, g_total_s
-      integer nxtask
+      integer tpinxt,tpisynxt
       integer next
       integer nprocs
       integer count
@@ -44,7 +44,7 @@ c ---------------------------------------
       double precision factor_l(1)
       double precision energy_l(2),total_d(1),total_s(1),total_all_d
       double precision total_all_s
-      external nxtask
+      external tpinxt,tpisynxt
 c Wenjing
 c for getting device information
       external integer armci_master
@@ -86,7 +86,7 @@ ckbn In a large cluster it is better to get and broadcast
      1      call errquit('t1_local',1,MA_ERR)
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 c    copy d_t1 ==> l_t1_local
-        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
+        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
 c -------------------------------
 c
 
@@ -98,7 +98,7 @@ c     1  call errquit('ccsd_t: GA problem',0,GA_ERR)
 
       nprocs = GA_NNODES()
       count = 0
-      next = nxtask(nprocs,1)
+      next = tpinxt(nprocs,1)
 c      total_all_d = 0.0d0
 c      total_all_s = 0.0d0
 
@@ -301,14 +301,14 @@ c
             if (.not.MA_POP_STACK(l_singles)) 
      1        call errquit('ccsd_t',4,MA_ERR)
 c
-            next = nxtask(nprocs,1)
+            next = tpinxt(nprocs,1)
             endif
             count = count + 1
 c
             endif
             endif
             endif
-ccx            next = nxtask(nprocs,1)
+ccx            next = tpinxt(nprocs,1)
 ccx            endif
 ccx            count = count + 1
            enddo
@@ -317,18 +317,18 @@ ccx            count = count + 1
         enddo
        enddo
       enddo
-      next = nxtask(-nprocs,1)
+      next = tpisynxt(-nprocs,1)
 #if 0
       if (.not.ga_create(mt_dbl,1,1,'perturbative',1,1,g_energy))
      1  call errquit('ccsd_t: GA problem',0,GA_ERR)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,energy1,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,energy1,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,energy1,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,energy1,1)
       call ga_zero(g_energy)
-      call ga_acc(g_energy,1,1,1,1,energy2,1,1.0d0)
-      call ga_sync()
-      call ga_get(g_energy,1,1,1,1,energy2,1)
+      call tpi_ga_acc(g_energy,1,1,1,1,energy2,1,1.0d0)
+      call tpi_ga_sync()
+      call tpi_ga_get(g_energy,1,1,1,1,energy2,1)
       if (.not.ga_destroy(g_energy))
      1  call errquit('ccsd_t: GA problem',1,GA_ERR)
 #else
