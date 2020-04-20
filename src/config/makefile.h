@@ -2471,9 +2471,11 @@ else
     FFLAGS = $(FOPTIONS) $(FDEBUG) 
     CFLAGS = $(COPTIONS) $(CDEBUG) 
 endif
+  CC += -fpie -rdynamic
+  FC += -fpie -rdynamic
   INCLUDES = -I. $(LIB_INCLUDES) -I$(INCDIR) $(INCPATH)
   CPPFLAGS = $(INCLUDES) $(DEFINES) $(LIB_DEFINES)
-   LDFLAGS = $(LDOPTIONS) -L$(LIBDIR) $(LIBPATH)
+   LDFLAGS = $(LDOPTIONS) -L$(LIBDIR) $(LIBPATH) -pie -rdynamic -pthread
       LIBS = $(NW_MODULE_LIBS) $(CORE_LIBS) 
 
 # I think this will work everywhere, but it might have to become
