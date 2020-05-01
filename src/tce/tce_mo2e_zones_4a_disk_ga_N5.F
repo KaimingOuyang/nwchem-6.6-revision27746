@@ -37,6 +37,7 @@ c
       INTEGER ii,i,j,k,l,N,ipos1,ipos2,ipos3,ipos4
       INTEGER del1,del2,p1rel,p2rel
       INTEGER size_4a,l_4a,k_4a
+      INTEGER l_ckp, k_ckp
 c
       integer mu,nu,rho,sigma
       integer mu_lo,mu_hi
@@ -106,6 +107,7 @@ c
       external nxtask
       logical nodezero
       logical idiskl
+      CHARACTER(len=64) :: errlog
 c
 c
 c
@@ -400,8 +402,14 @@ c
         if (sf_wait(request).ne.0)
      1    call errquit('zones get3: sf problem',2,DISK_ERR)
        else
+        write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 1"
+        if(.not.ma_push_get(mt_dbl,1,'aux',l_aux,k_aux))
+     1     call errquit(errlog,0,MA_ERR)
         call ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
+        write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 2"
+        if (.not.ma_pop_stack(l_aux))
+     1     call errquit(errlog,15,MA_ERR)
        end if 
 c
 c
@@ -421,6 +429,9 @@ c --- C_[g3][sigma]
        enddo
 c --- C_[g3][sigma]([sigma]<[rho]|[nu] [mu])
 c            zone3   zone3  zone4
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 3"
+      if(.not.ma_push_get(mt_dbl,1,'aux',l_aux,k_aux))
+     1     call errquit(errlog,0,MA_ERR)
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
      1 nalength(azone1)*nalength(azone2)*nalength(azone4), !n
@@ -431,6 +442,9 @@ c            zone3   zone3  zone4
      1 dbl_mb(k_4a),nalength(azone3),          ! B,ldb
      1 0.0d0,dbl_mb(k_integral),
      1 int_mb(k_range_alpha+g3b-1))
+        write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 4"
+        if (.not.ma_pop_stack(l_aux))
+     1     call errquit(errlog,15,MA_ERR)
 c transposition ([g3][rho]|[nu][mu]) => ([rho][g3]|[nu][mu]) 
 c
        size_aux=int_mb(k_range_alpha+g3b-1)*nalength(azone4)*
@@ -441,11 +455,12 @@ c
      & int_mb(k_range_alpha+g3b-1),nalength(azone4),
      & nalength(azone1),nalength(azone2),
      &2,1,3,4,1.0d0)
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 5"
       do i=1,size_aux
        dbl_mb(k_integral+i-1)=dbl_mb(k_aux+i-1)
       enddo
       if (.not.ma_pop_stack(l_aux))
-     1     call errquit('l_aux1',15,MA_ERR)
+     1     call errquit(errlog,15,MA_ERR)
 c C([g4][azone4=rho])
        i = 0
        do irho1   =  1,nalength(azone4)
@@ -456,6 +471,9 @@ c C([g4][azone4=rho])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 6"
+       if(.not.ma_push_get(mt_dbl,1,'aux',l_aux,k_aux))
+     1     call errquit(errlog,0,MA_ERR)
 c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
@@ -467,6 +485,9 @@ c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
      1 dbl_mb(k_integral),nalength(azone4),          ! B,ldb
      1 1.0d0,dbl_mb(k_2g2a),
      1 int_mb(k_range_alpha+g4b-1))
+        write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 7"
+        if (.not.ma_pop_stack(l_aux))
+     1     call errquit(errlog,15,MA_ERR)
 c  done with first  part of azone3.ne.azone4 case ----------------
 c  transposition of atomic integrals
 c  ([sigma=azone3][rho=azone4]|[nu][mu]) ==>
@@ -490,6 +511,9 @@ c C([g3][azone4=rho])
        dbl_mb(k_coeff+i-1)=dbl_mb(k_movecs_orb+ipos1-1)
        enddo
        enddo
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 8"
+       if(.not.ma_push_get(mt_dbl,1,'ckp',l_ckp,k_ckp))
+     1     call errquit(errlog,0,MA_ERR)
 c C([g3][azone4=rho])([rho=azone4][sigma=azone3]|[nu][mu])
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
@@ -501,6 +525,9 @@ c C([g3][azone4=rho])([rho=azone4][sigma=azone3]|[nu][mu])
      1 dbl_mb(k_aux),nalength(azone4),          ! B,ldb
      1 0.0d0,dbl_mb(k_integral),
      1 int_mb(k_range_alpha+g3b-1))
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 9"
+       if(.not.ma_pop_stack(l_ckp))
+     1     call errquit(errlog,0,MA_ERR)
 c
       if (.not.ma_pop_stack(l_aux))
      1     call errquit('l_aux2',15,MA_ERR)
@@ -517,8 +544,9 @@ c
       do i=1,size_aux
        dbl_mb(k_integral+i-1)=dbl_mb(k_aux+i-1)
       enddo
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 10"
       if (.not.ma_pop_stack(l_aux))
-     1     call errquit('l_aux1',15,MA_ERR)
+     1     call errquit(errlog,15,MA_ERR)
 c C([g4][azone3=sigma])
        i = 0
        do isigma1   =  1,nalength(azone3)
@@ -530,6 +558,9 @@ c C([g4][azone3=sigma])
        enddo
        enddo
 c C([g4][azone3=sigma])([sigma][g3]|[azone1][azone2])
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 11"
+       if(.not.ma_push_get(mt_dbl,1,'ckp',l_ckp,k_ckp))
+     1     call errquit(errlog,0,MA_ERR)
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
      1 nalength(azone1)*nalength(azone2)*int_mb(k_range_alpha+g3b-1), !n
@@ -540,6 +571,9 @@ c C([g4][azone3=sigma])([sigma][g3]|[azone1][azone2])
      1 dbl_mb(k_integral),nalength(azone3),          ! B,ldb
      1 1.0d0,dbl_mb(k_2g2a),
      1 int_mb(k_range_alpha+g4b-1))
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 12"
+       if(.not.ma_pop_stack(l_ckp))
+     1     call errquit(errlog,0,MA_ERR)
       end if !azone3.ne.azone4
 c
 c
@@ -557,6 +591,9 @@ c --- C_[g3][sigma]
        enddo
 c --- C_[g3][sigma]([sigma]=[rho]|[nu] [mu])
 c            zone3   zone3  zone4
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 13"
+      if(.not.ma_push_get(mt_dbl,1,'ckp',l_ckp,k_ckp))
+     1     call errquit(errlog,0,MA_ERR)
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g3b-1),  !m
      1 nalength(azone1)*nalength(azone2)*nalength(azone4), !n
@@ -567,6 +604,9 @@ c            zone3   zone3  zone4
      1 dbl_mb(k_4a),nalength(azone3),          ! B,ldb
      1 0.0d0,dbl_mb(k_integral),
      1 int_mb(k_range_alpha+g3b-1))
+       write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 14"
+       if(.not.ma_pop_stack(l_ckp))
+     1     call errquit(errlog,0,MA_ERR)
 c transposition ([g3][rho]|[nu][mu]) => ([rho][g3]|[nu][mu]) 
 c
        size_aux=int_mb(k_range_alpha+g3b-1)*nalength(azone4)*
@@ -580,8 +620,9 @@ c
       do i=1,size_aux
        dbl_mb(k_integral+i-1)=dbl_mb(k_aux+i-1)
       enddo
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 15"
       if (.not.ma_pop_stack(l_aux))
-     1     call errquit('l_aux1',15,MA_ERR)
+     1     call errquit(errlog,15,MA_ERR)
 c C([g4][azone4=rho])
        i = 0
        do irho1   =  1,nalength(azone4)
@@ -593,6 +634,9 @@ c C([g4][azone4=rho])
        enddo
        enddo
 c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 16"
+      if(.not.ma_push_get(mt_dbl,1,'ckp',l_ckp,k_ckp))
+     1     call errquit(errlog,0,MA_ERR)
       call  dgemm('N','N',
      1 int_mb(k_range_alpha+g4b-1),  !m
      1 nalength(azone1)*nalength(azone2)*int_mb(k_range_alpha+g3b-1), !n
@@ -603,6 +647,9 @@ c C([g4][azone4=rho])([rho][g3]|[azone1][azone2])
      1 dbl_mb(k_integral),nalength(azone4),          ! B,ldb
      1 1.0d0,dbl_mb(k_2g2a),
      1 int_mb(k_range_alpha+g4b-1))
+      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 17"
+      if(.not.ma_pop_stack(l_ckp))
+     1     call errquit(errlog,0,MA_ERR)
       end if !azone3.eq.azone4
 c
 c
