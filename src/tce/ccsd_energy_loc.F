@@ -65,7 +65,7 @@ cc        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
      &checkpoint ", chkpid, "]"
         call flush(10)
         call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
-        write(10, '(A,I0,A)') "rank ", nodeid,  " - get_block end [checkp
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - get_block end [checkp
      &oint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
@@ -79,7 +79,7 @@ cc        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
         call ccsd_e(d_f1,d_e,k_t1_local,d_t2,d_v2,
      1              k_f1_offset,k_e_offset,
      2              k_t1_offset,k_t2_offset,k_v2_offset)
-        write(10, '(A,I0,A)') "rank ", nodeid,  " - ccsd_e end [checkpoin
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - ccsd_e end [checkpoin
      &t ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
