@@ -35,7 +35,7 @@ c
 c
       nodeid = ga_nodeid()
       chkpid = 0
-      write(file, '(A, I0)') "ccsd-log.", nodeid
+      write(outfile, '(A, I0)') "log/ccsd-log.", nodeid
       open(10, file=outfile, action='write')
 
       nodezero=(ga_nodeid().eq.0)
@@ -113,7 +113,6 @@ cxxxxxxxxxxxxxxxxxxxx
         call flush(10)
         chkpid = chkpid + 1
 
-        if(ccsd_var.eq.'cc2') then
         call reconcilefile(d_r1,size_t1)
         call tce_filename('r2',filename)
         call createfile(filename,d_r2,size_t2)

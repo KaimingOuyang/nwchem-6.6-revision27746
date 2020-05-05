@@ -16,11 +16,11 @@ if [ -d ${ARMCI_MPI_DIR} ] ; then
   echo "Existing ARMCI-MPI source directory found!"
   echo "Step 1 of 4 succeeded."
 elif [ -x "$(command -v git)" ]; then
-  git clone -b mpi3rma http://git.mpich.org/armci-mpi.git ${ARMCI_MPI_DIR} >& git.log
+  git clone -b mpi3rma https://github.com/pmodels/armci-mpi.git ${ARMCI_MPI_DIR}
   stat=$?
   if [ $stat -ne 0 ] ; then
     echo "git clone failed"
-    exit 1
+    #exit 1
   else
     echo "Step 1 of 4 succeeded."
   fi
