@@ -61,26 +61,26 @@ c
         call ma_zero(dbl_mb(k_t1_local),size_t1)
 cc        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
 
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block begin [
-     &checkpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block begin 
+     &[checkpoint ", chkpid, "]"
         call flush(10)
         call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - get_block end [checkp
-     &oint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - get_block end [
+     &checkpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
 
         call tce_filename('e',filename)
         call createfile(filename,d_e,1) ! size_e = 1
 
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_e begin [che
-     &ckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_e begin [ch
+     &eckpoint ", chkpid, "]"
         call flush(10)
         call ccsd_e(d_f1,d_e,k_t1_local,d_t2,d_v2,
      1              k_f1_offset,k_e_offset,
      2              k_t1_offset,k_t2_offset,k_v2_offset)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - ccsd_e end [checkpoin
-     &t ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid,  " - ccsd_e end [che
+     &ckpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
 
@@ -88,8 +88,8 @@ cc        call ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
         call tce_filename('r1',filename)
         call createfile(filename,d_r1,size_t1)
 
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t1 begin [ch
-     &eckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t1 begin [c
+     &heckpoint ", chkpid, "]"
         call flush(10)
         if(ccsd_var.eq.'cc2') then
 c           call cc2_t1(d_f1,d_r1,d_t1,d_t2,d_v2,k_f1_offset,
@@ -108,16 +108,16 @@ cxxxxxxxxxxxxxxxxxxxx
      2                  k_t1_offset,k_t2_offset,k_v2_offset)
           end if
         end if
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t1 end [chec
-     &kpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t1 end [che
+     &ckpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
 
         call reconcilefile(d_r1,size_t1)
         call tce_filename('r2',filename)
         call createfile(filename,d_r2,size_t2)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2 begin [ch
-     &eckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2 begin [c
+     &heckpoint ", chkpid, "]"
         call flush(10)
         if(ccsd_var.eq.'cc2') then
 c           call cc2_t2(d_f1,d_r2,d_t1,d_t2,d_v2,k_f1_offset,k_t2_offset,
@@ -146,8 +146,8 @@ cxxxxxxxxxxxxxxxxxxxxx
      2                  k_t1_offset,k_t2_offset,k_v2_offset)
           end if
         end if
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2 end [chec
-     &kpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2 end [che
+     &ckpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
 
@@ -155,12 +155,12 @@ cxxxxxxxxxxxxxxxxxxxxx
         call tce_residual_t1(d_r1,k_t1_offset,r1)
         call tce_residual_t2(d_r2,k_t2_offset,r2)
         residual = max(r1,r2)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block begin [
-     &checkpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block begin 
+     &[checkpoint ", chkpid, "]"
         call flush(10)
         call get_block(d_e,corr,1,0)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block end [ch
-     &eckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - get_block end [c
+     &heckpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
 
@@ -231,16 +231,16 @@ c          write(LuOut,9101) cpusecs(37),cpusecs(38)
           call x2_restart_save(d_t2,k_t2_offset,size_t2,0,
      1                         handle_t2,irrep_t)
         endif
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - tce_diis begin [c
-     &heckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - tce_diis begin [
+     &checkpoint ", chkpid, "]"
         call flush(10)
         call tce_diis(.false.,iter,.true.,.true.,.false.,.false.,
      1                d_r1,d_t1,k_t1_offset,size_t1,
      2                d_r2,d_t2,k_t2_offset,size_t2,
      3                dummy,dummy,dummy,dummy,
      4                dummy,dummy,dummy,dummy)
-        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - tce_diis end [che
-     &ckpoint ", chkpid, "]"
+        write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - tce_diis end [ch
+     &eckpoint ", chkpid, "]"
         call flush(10)
         chkpid = chkpid + 1
         call deletefile(d_r2)
@@ -249,8 +249,8 @@ c          write(LuOut,9101) cpusecs(37),cpusecs(38)
         if (nodezero) call util_flush(LuOut)
       enddo
 c
-          write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd done [chec
-     &kpoint ", chkpid, "]"
+          write(10, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd done [che
+     &ckpoint ", chkpid, "]"
           chkpid = chkpid + 1
           call util_file_name('t1amp',.false.,.true.,filename)
           unitn=79
