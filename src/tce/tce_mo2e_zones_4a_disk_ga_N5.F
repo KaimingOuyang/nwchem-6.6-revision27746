@@ -460,7 +460,7 @@ c      write(errlog, '(A, I0, A)') "rank ", ga_nodeid(), " - chkp 5"
        dbl_mb(k_integral+i-1)=dbl_mb(k_aux+i-1)
       enddo
       if (.not.ma_pop_stack(l_aux))
-     1     call errquit(l_aux1,15,MA_ERR)
+     1     call errquit('l_aux1',15,MA_ERR)
 c C([g4][azone4=rho])
        i = 0
        do irho1   =  1,nalength(azone4)
