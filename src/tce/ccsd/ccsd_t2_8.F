@@ -478,9 +478,10 @@ C     i0 ( p3 p4 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v ( 
          logpath = "log"
       endif
 
-      write(ccsd_t2_8_test_file, '(A,A)') logpath,"/ccsd_t2_8_test-log"
+      write(ccsd_t2_8_test_file, '(A,A)') trim(logpath),"/ccsd_t2_8_test-
+     &log"
       open(11, file=ccsd_t2_8_test_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
       call GA_SYNC()
 

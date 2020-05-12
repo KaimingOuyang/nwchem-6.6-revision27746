@@ -2887,9 +2887,10 @@ C     i1 ( h10 p3 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v (
          logpath = "log"
       endif
 
-      write(ccsd_t2_2_6_file, '(A, A)') logpath, "/ccsd_t2_2_6-log"
+      write(ccsd_t2_2_6_file, '(A, A)') trim(logpath), "/ccsd_t2_2_6-log
+     &"
       open(11, file=ccsd_t2_2_6_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
       call GA_SYNC()
       RETURN
@@ -3820,9 +3821,10 @@ C     i1 ( h9 h1 )_vt + = -1/2 * Sum ( h8 p6 p7 ) * t ( p6 p7 h1 h8 )_t * v ( h8
          logpath = "log"
       endif
 
-      write(ccsd_t2_4_4_file, '(A, A)') logpath, "/ccsd_t2_4_4-log"
+      write(ccsd_t2_4_4_file, '(A, A)') trim(logpath), "/ccsd_t2_4_4-log
+     &"
       open(11, file=ccsd_t2_4_4_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
       call GA_SYNC()
       RETURN
@@ -4397,9 +4399,10 @@ C     i1 ( p3 p5 )_vt + = -1/2 * Sum ( h7 h8 p6 ) * t ( p3 p6 h7 h8 )_t * v ( h7
          logpath = "log"
       endif
 
-      write(ccsd_t2_5_3_file, '(A, A)') logpath, "/ccsd_t2_5_3-log"
+      write(ccsd_t2_5_3_file, '(A, A)') trim(logpath), "/ccsd_t2_5_3-log
+     &"
       open(11, file=ccsd_t2_5_3_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
 
       call GA_SYNC()
@@ -5418,9 +5421,10 @@ C     i0 ( p3 p4 h1 h2 )_vt + = -1 * P( 4 ) * Sum ( h6 p5 ) * t ( p3 p5 h1 h6 )_
          logpath = "log"
       endif
 
-      write(ccsd_t2_7_file, '(A, A)') logpath, "/ccsd_t2_7_file-log"
+      write(ccsd_t2_7_file, '(A, A)') trim(logpath), "/ccsd_t2_7_file-log
+     &"
       open(11, file=ccsd_t2_7_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
       call GA_SYNC()
       RETURN
@@ -5921,9 +5925,10 @@ C     i1 ( h6 p3 h1 p5 )_vt + = -1/2 * Sum ( h8 p7 ) * t ( p3 p7 h1 h8 )_t * v (
          logpath = "log"
       endif
 
-      write(ccsd_t2_7_3_file, '(A, A)') logpath, "/ccsd_t2_7_3-log"
+      write(ccsd_t2_7_3_file, '(A, A)') trim(logpath), "/ccsd_t2_7_3-log
+     &"
       open(11, file=ccsd_t2_7_3_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
       close(11)
       call GA_SYNC()
       RETURN
