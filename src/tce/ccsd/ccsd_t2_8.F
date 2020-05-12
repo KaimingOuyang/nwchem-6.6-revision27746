@@ -207,6 +207,10 @@ C     i0 ( p3 p4 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v ( 
       logical e_a,e_b,e_c,e_t
 #endif
       double precision alpha
+      CHARACTER(len=64) ccsd_t2_8_test_file
+      CHARACTER(len=64) hostname
+      CHARACTER(len=64) logpath
+      integer status
       INTEGER NXTASK
       EXTERNAL NXTASK
       nprocs = GA_NNODES()
@@ -468,6 +472,16 @@ C     i0 ( p3 p4 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v ( 
        END DO
       END DO
       next = NXTASK(-nprocs, 1)
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_8_test_file, '(A,A)') logpath,"/ccsd_t2_8_test-log"
+      open(11, file=ccsd_t2_8_test_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
       call GA_SYNC()
 
 #ifdef USE_F90_ALLOCATABLE

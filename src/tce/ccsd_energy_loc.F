@@ -31,13 +31,28 @@ c
       integer nodeid
       integer chkpid
       CHARACTER(len=64) outfile
+      character(len=64) logpath
+      character(len=64) pmapfile
+      character(len=64) hostname
       character*255 filename
+      integer nprocs, status, hostnm, err
 c
       nodeid = ga_nodeid()
+      nprocs = ga_nnodes()
+      status = hostnm(hostname)
       chkpid = 0
-      write(outfile, '(A, I0)') "log/ccsd-log.", nodeid
-      open(10, file=outfile, action='write')
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
 
+      write(pmapfile, '(A, A)') logpath, "/pmap-log"
+      write(outfile, '(A, A, I0)') logpath, "/ccsd-log.", nodeid
+
+      open(10, file=outfile, action='write')
+      open(11, file=pmapfile, position='append')
+      write(11, '(I0,1x,I0,1x,A)') nodeid, getpid(), hostname
+      close(11)
       nodezero=(ga_nodeid().eq.0)
       if (skip_t) then
         if (nodezero) write(LuOut,9700)

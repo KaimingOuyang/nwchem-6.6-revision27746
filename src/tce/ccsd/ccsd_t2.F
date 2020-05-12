@@ -2767,6 +2767,10 @@ C     i1 ( h10 p3 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v (
       INTEGER isuperp
       INTEGER l_c
       INTEGER k_c
+      integer status
+      CHARACTER(len=64) ccsd_t2_2_6_file
+      CHARACTER(len=64) hostname
+      CHARACTER(len=64) logpath
       DOUBLE PRECISION FACTORIAL
       EXTERNAL NXTASK
       EXTERNAL FACTORIAL
@@ -2877,6 +2881,16 @@ C     i1 ( h10 p3 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v (
       END DO
       END DO
       next = NXTASK(-nprocs, 1)
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_2_6_file, '(A, A)') logpath, "/ccsd_t2_2_6-log"
+      open(11, file=ccsd_t2_2_6_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
       call GA_SYNC()
       RETURN
       END
@@ -3666,6 +3680,10 @@ C     i1 ( h9 h1 )_vt + = -1/2 * Sum ( h8 p6 p7 ) * t ( p6 p7 h1 h8 )_t * v ( h8
       INTEGER isuperp
       INTEGER l_c
       INTEGER k_c
+      integer status
+      character(len=64) logpath
+      character(len=64) ccsd_t2_4_4_file
+      character(len=64) hostname
       DOUBLE PRECISION FACTORIAL
       EXTERNAL NXTASK
       EXTERNAL FACTORIAL
@@ -3795,6 +3813,17 @@ C     i1 ( h9 h1 )_vt + = -1/2 * Sum ( h8 p6 p7 ) * t ( p6 p7 h1 h8 )_t * v ( h8
       END DO
       END DO
       next = NXTASK(-nprocs, 1)
+
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_4_4_file, '(A, A)') logpath, "/ccsd_t2_4_4-log"
+      open(11, file=ccsd_t2_4_4_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
       call GA_SYNC()
       RETURN
       END
@@ -4228,6 +4257,10 @@ C     i1 ( p3 p5 )_vt + = -1/2 * Sum ( h7 h8 p6 ) * t ( p3 p6 h7 h8 )_t * v ( h7
       INTEGER isubh
       INTEGER l_c
       INTEGER k_c
+      CHARACTER(len=64) ccsd_t2_5_3_file
+      CHARACTER(len=64) hostname
+      CHARACTER(len=64) logpath
+      integer status
       DOUBLE PRECISION FACTORIAL
       EXTERNAL NXTASK
       EXTERNAL FACTORIAL
@@ -4357,6 +4390,18 @@ C     i1 ( p3 p5 )_vt + = -1/2 * Sum ( h7 h8 p6 ) * t ( p3 p6 h7 h8 )_t * v ( h7
       END DO
       END DO
       next = NXTASK(-nprocs, 1)
+
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_5_3_file, '(A, A)') logpath, "/ccsd_t2_5_3-log"
+      open(11, file=ccsd_t2_5_3_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
+
       call GA_SYNC()
       RETURN
       END
@@ -5220,6 +5265,10 @@ C     i0 ( p3 p4 h1 h2 )_vt + = -1 * P( 4 ) * Sum ( h6 p5 ) * t ( p3 p5 h1 h6 )_
       INTEGER k_b
       INTEGER l_c
       INTEGER k_c
+      integer status
+      character(len=64) logpath
+      character(len=64) ccsd_t2_7_file
+      character(len=64) hostname
       EXTERNAL NXTASK
       nprocs = GA_NNODES()
       count = 0
@@ -5363,6 +5412,16 @@ C     i0 ( p3 p4 h1 h2 )_vt + = -1 * P( 4 ) * Sum ( h6 p5 ) * t ( p3 p5 h1 h6 )_
       END DO
       END DO
       next = NXTASK(-nprocs, 1)
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_7_file, '(A, A)') logpath, "/ccsd_t2_7_file-log"
+      open(11, file=ccsd_t2_7_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
       call GA_SYNC()
       RETURN
       END
@@ -5680,6 +5739,10 @@ C     i1 ( h6 p3 h1 p5 )_vt + = -1/2 * Sum ( h8 p7 ) * t ( p3 p7 h1 h8 )_t * v (
       INTEGER k_b
       INTEGER l_c
       INTEGER k_c
+      character(len=64) logpath
+      character(len=64) ccsd_t2_7_3_file
+      character(len=64) hostname
+      integer status
       EXTERNAL NXTASK
       nprocs = GA_NNODES()
       count = 0
@@ -5851,6 +5914,17 @@ C     i1 ( h6 p3 h1 p5 )_vt + = -1/2 * Sum ( h8 p7 ) * t ( p3 p7 h1 h8 )_t * v (
       END DO
       END DO
       next = NXTASK(-nprocs, 1)
+
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+         logpath = "log"
+      endif
+
+      write(ccsd_t2_7_3_file, '(A, A)') logpath, "/ccsd_t2_7_3-log"
+      open(11, file=ccsd_t2_7_3_file, position='append')
+      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), hostname
+      close(11)
       call GA_SYNC()
       RETURN
       END
