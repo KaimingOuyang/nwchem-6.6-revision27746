@@ -478,11 +478,12 @@ C     i0 ( p3 p4 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v ( 
          logpath = "log"
       endif
 
-      write(ccsd_t2_8_test_file, '(A,A)') trim(logpath),"/ccsd_t2_8_test-
-     &log"
-      open(11, file=ccsd_t2_8_test_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_8_test_file, '(A,A,I0)') trim(logpath),"/ccsd_t2_8_t
+     &est-log.", ga_nodeid()
+      open(30001, file=ccsd_t2_8_test_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
       call GA_SYNC()
 
 #ifdef USE_F90_ALLOCATABLE

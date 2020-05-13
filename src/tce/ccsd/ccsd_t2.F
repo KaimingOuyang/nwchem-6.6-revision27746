@@ -83,6 +83,7 @@ c      INTEGER size_t2
       INTEGER size_i3
       INTEGER d_f1
       INTEGER k_f1_offset
+      integer chkpid, nodeid
 c - T1/X1 LOCALIZATION -------------------
       integer l_i1_local,k_i1_local
 c ---------------------------------------
@@ -94,6 +95,7 @@ c ---------------------------------------
       integer p,h,maxp,maxh
       integer profile
       double precision tt0,tt1,t2timers(50)
+      nodeid = ga_nodeid()
       nodezero=(ga_nodeid().eq.0)
 c
       if (.not.rtdb_get(rtdb,'tce:term_profiling',mt_int,1,
@@ -108,7 +110,13 @@ c
 c As a lose upper bound, we can use tile_dim instead,
 c but for occupied tiles, this may be a very loose bound.
 c
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2 begin[c
+     &heckpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
+
       maxp = 0
+      chkpid = 0
       do p = noab+1,noab+nvab
          maxp = max(maxp,int_mb(k_range+p-1))
       enddo
@@ -117,19 +125,70 @@ c
          maxh = max(maxh,int_mb(k_range+h-1))
       enddo
 c
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_1 begin
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_1(d_v2,k_v2_offset,d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_1 end[c
+     &heckpoint ", chkpid, "]"
+      call flush(29999)
+      chkpid = chkpid + 1
+
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - OFFSET_ccsd_t2_
+     &2_1 begin[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL OFFSET_ccsd_t2_2_1(l_i1_offset,k_i1_offset,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - OFFSET_ccsd_t2_
+     &2_1 end[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL TCE_FILENAME('ccsd_t2_2_1_i1',filename)
       CALL CREATEFILE(filename,d_i1,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_1 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_2_1(d_v2,k_v2_offset,d_i1,k_i1_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_1 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
+
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - OFFSET_ccsd_t2_
+     &2_2_1 begin[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL OFFSET_ccsd_t2_2_2_1(l_i2_offset,k_i2_offset,size_i2)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - OFFSET_ccsd_t2_
+     &2_2_1 end[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
+
       CALL TCE_FILENAME('ccsd_t2_2_2_1_i2',filename)
       CALL CREATEFILE(filename,d_i2,size_i2)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_2_1 b
+     &egin[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_2_2_1(d_v2,k_v2_offset,d_i2,k_i2_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_2_1 e
+     &nd[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL OFFSET_ccsd_t2_2_2_2_1(l_i3_offset,k_i3_offset,size_i3)
       CALL TCE_FILENAME('ccsd_t2_2_2_2_1_i3',filename)
       CALL CREATEFILE(filename,d_i3,size_i3)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_2_2_1
+     & begin[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_2_2_2_1(d_v2,k_v2_offset,d_i3,k_i3_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_2_2_2_1
+     & end[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_2_2_2_2(d_t1,k_t1_offset,d_v2,k_v2_offset,
      1                     d_i3,k_i3_offset)
       CALL RECONCILEFILE(d_i3,size_i3)
@@ -184,7 +243,15 @@ c
       CALL OFFSET_ccsd_t2_4_1(l_i1_offset,k_i1_offset,size_i1)
       CALL TCE_FILENAME('ccsd_t2_4_1_i1',filename)
       CALL CREATEFILE(filename,d_i1,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4_1 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_4_1(d_f1,k_f1_offset,d_i1,k_i1_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4_1 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL OFFSET_ccsd_t2_4_2_1(l_i2_offset,k_i2_offset,size_i2)
       CALL TCE_FILENAME('ccsd_t2_4_2_1_i2',filename)
       CALL CREATEFILE(filename,d_i2,size_i2)
@@ -199,8 +266,16 @@ c
      1    CALL ERRQUIT('ccsd_t2',-1,MA_ERR)
       CALL ccsd_t2_4_3(d_t1,k_t1_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4_4 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_4_4(d_t2,k_t2_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4_4 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL RECONCILEFILE(d_i1,size_i1)
 c - T1/X1 LOCALIZATION ----------
         if (.not.MA_PUSH_GET(mt_dbl,size_i1,'i1_local',
@@ -211,8 +286,16 @@ c    copy d_t1 ==> l_t1_local
         call ga_get(d_i1,1,size_i1,1,1,dbl_mb(k_i1_local),1)
 c -------------------------------
 ccx      CALL ccsd_t2_4(d_t2,k_t2_offset,d_i1,k_i1_offset,d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4 begin
+     &[checkpoint ", chkpid, "]"
+       chkpid = chkpid + 1
+       call flush(29999)
       CALL ccsd_t2_4(d_t2,k_t2_offset,k_i1_local,k_i1_offset,
      &              d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_4 end[c
+     &heckpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
 c - T1/X1 LOCALIZATION --
          if(.not.MA_POP_STACK(l_i1_local))
      &      call errquit('l_i1_local',2,MA_ERR)
@@ -223,11 +306,19 @@ c -----------------------
       CALL OFFSET_ccsd_t2_5_1(l_i1_offset,k_i1_offset,size_i1)
       CALL TCE_FILENAME('ccsd_t2_5_1_i1',filename)
       CALL CREATEFILE(filename,d_i1,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_5_1 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_5_1(d_f1,k_f1_offset,d_i1,k_i1_offset)
       CALL ccsd_t2_5_2(d_t1,k_t1_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
       CALL ccsd_t2_5_3(d_t2,k_t2_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_5_1 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL RECONCILEFILE(d_i1,size_i1)
 c - T1/X1 LOCALIZATION ----------
         if (.not.MA_PUSH_GET(mt_dbl,size_i1,'i1_local',
@@ -238,8 +329,16 @@ c    copy d_t1 ==> l_t1_local
         call ga_get(d_i1,1,size_i1,1,1,dbl_mb(k_i1_local),1)
 c -------------------------------
 ccx      CALL ccsd_t2_5(d_t2,k_t2_offset,d_i1,k_i1_offset,d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_5 begin
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_5(d_t2,k_t2_offset,k_i1_local,k_i1_offset,
      &               d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_5 end[c
+     &heckpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
 c - T1/X1 LOCALIZATION --
          if(.not.MA_POP_STACK(l_i1_local))
      &      call errquit('l_i1_local',2,MA_ERR)
@@ -250,6 +349,10 @@ c -----------------------
       CALL OFFSET_ccsd_t2_6_1(l_i1_offset,k_i1_offset,size_i1)
       CALL TCE_FILENAME('ccsd_t2_6_1_i1',filename)
       CALL CREATEFILE(filename,d_i1,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_6_1 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_6_1(d_v2,k_v2_offset,d_i1,k_i1_offset)
       CALL OFFSET_ccsd_t2_6_2_1(l_i2_offset,k_i2_offset,size_i2)
       CALL TCE_FILENAME('ccsd_t2_6_2_1_i2',filename)
@@ -267,19 +370,33 @@ c -----------------------
      1                 d_i1,k_i1_offset)
       CALL RECONCILEFILE(d_i1,size_i1)
       CALL ccsd_t2_6(d_t2,k_t2_offset,d_i1,k_i1_offset,d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_6_1 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL DELETEFILE(d_i1)
       IF (.not.MA_POP_STACK(l_i1_offset)) 
      1    CALL ERRQUIT('ccsd_t2',-1,MA_ERR)
       CALL OFFSET_ccsd_t2_7_1(l_i1_offset,k_i1_offset,size_i1)
       CALL TCE_FILENAME('ccsd_t2_7_1_i1',filename)
       CALL CREATEFILE(filename,d_i1,size_i1)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_7_1 beg
+     &in[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL ccsd_t2_7_1(d_v2,k_v2_offset,d_i1,k_i1_offset)
       CALL ccsd_t2_7_2(d_t1,k_t1_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
+      
       CALL ccsd_t2_7_3(d_t2,k_t2_offset,d_v2,k_v2_offset,
      1                 d_i1,k_i1_offset)
+      
       CALL RECONCILEFILE(d_i1,size_i1)
       CALL ccsd_t2_7(d_t2,k_t2_offset,d_i1,k_i1_offset,d_i0,k_i0_offset)
+      write(29999, '(A,I0,A,I0,A)') "rank ", nodeid, " - ccsd_t2_7_1 end
+     &[checkpoint ", chkpid, "]"
+      chkpid = chkpid + 1
+      call flush(29999)
       CALL DELETEFILE(d_i1)
       IF (.not.MA_POP_STACK(l_i1_offset)) 
      1    CALL ERRQUIT('ccsd_t2',-1,MA_ERR)
@@ -2887,11 +3004,12 @@ C     i1 ( h10 p3 h1 h2 )_vt + = 1/2 * Sum ( p5 p6 ) * t ( p5 p6 h1 h2 )_t * v (
          logpath = "log"
       endif
 
-      write(ccsd_t2_2_6_file, '(A, A)') trim(logpath), "/ccsd_t2_2_6-log
-     &"
-      open(11, file=ccsd_t2_2_6_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_2_6_file, '(A, A, I0)') trim(logpath), "/ccsd_t2_2_6
+     &-log.", ga_nodeid()
+      open(30001, file=ccsd_t2_2_6_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
       call GA_SYNC()
       RETURN
       END
@@ -3821,11 +3939,12 @@ C     i1 ( h9 h1 )_vt + = -1/2 * Sum ( h8 p6 p7 ) * t ( p6 p7 h1 h8 )_t * v ( h8
          logpath = "log"
       endif
 
-      write(ccsd_t2_4_4_file, '(A, A)') trim(logpath), "/ccsd_t2_4_4-log
-     &"
-      open(11, file=ccsd_t2_4_4_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_4_4_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_4_4-
+     &log.", ga_nodeid()
+      open(30001, file=ccsd_t2_4_4_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
       call GA_SYNC()
       RETURN
       END
@@ -4399,11 +4518,12 @@ C     i1 ( p3 p5 )_vt + = -1/2 * Sum ( h7 h8 p6 ) * t ( p3 p6 h7 h8 )_t * v ( h7
          logpath = "log"
       endif
 
-      write(ccsd_t2_5_3_file, '(A, A)') trim(logpath), "/ccsd_t2_5_3-log
-     &"
-      open(11, file=ccsd_t2_5_3_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_5_3_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_5_3-
+     &log.", ga_nodeid()
+      open(30001, file=ccsd_t2_5_3_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
 
       call GA_SYNC()
       RETURN
@@ -5421,11 +5541,12 @@ C     i0 ( p3 p4 h1 h2 )_vt + = -1 * P( 4 ) * Sum ( h6 p5 ) * t ( p3 p5 h1 h6 )_
          logpath = "log"
       endif
 
-      write(ccsd_t2_7_file, '(A, A)') trim(logpath), "/ccsd_t2_7_file-log
-     &"
-      open(11, file=ccsd_t2_7_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_7_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_7_file
+     &-log.", ga_nodeid()
+      open(30001, file=ccsd_t2_7_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
       call GA_SYNC()
       RETURN
       END
@@ -5925,11 +6046,12 @@ C     i1 ( h6 p3 h1 p5 )_vt + = -1/2 * Sum ( h8 p7 ) * t ( p3 p7 h1 h8 )_t * v (
          logpath = "log"
       endif
 
-      write(ccsd_t2_7_3_file, '(A, A)') trim(logpath), "/ccsd_t2_7_3-log
-     &"
-      open(11, file=ccsd_t2_7_3_file, position='append')
-      write(11, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostname)
-      close(11)
+      write(ccsd_t2_7_3_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_7_3-
+     &log", ga_nodeid()
+      open(30001, file=ccsd_t2_7_3_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
+     &me)
+      close(30001)
       call GA_SYNC()
       RETURN
       END
