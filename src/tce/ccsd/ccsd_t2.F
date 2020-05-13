@@ -5534,18 +5534,26 @@ C     i0 ( p3 p4 h1 h2 )_vt + = -1 * P( 4 ) * Sum ( h6 p5 ) * t ( p3 p5 h1 h6 )_
       END DO
       END DO
       END DO
-      next = NXTASK(-nprocs, 1)
       status = hostnm(hostname)
       call get_environment_variable("NWCHEM_LOG_PATH", logpath)
       if (logpath == "") then
          logpath = "log"
       endif
 
-      write(ccsd_t2_7_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_7_file
-     &-log.", ga_nodeid()
+      write(ccsd_t2_7_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_7-log.
+     &", ga_nodeid()
       open(30001, file=ccsd_t2_7_file, position='append')
       write(30001, '(I0,1x,I0,1x,A)') ga_nodeid(), getpid(), trim(hostna
      &me)
+      close(30001)
+
+      next = NXTASK(-nprocs, 1)
+
+      write(ccsd_t2_7_file, '(A, A,I0)') trim(logpath), "/ccsd_t2_7-log.
+     &", ga_nodeid()
+      open(30001, file=ccsd_t2_7_file, position='append')
+      write(30001, '(I0,1x,I0,1x,A, A)') ga_nodeid(), getpid(), trim(hos
+     &tname), " End NETASK"
       close(30001)
       call GA_SYNC()
       RETURN
