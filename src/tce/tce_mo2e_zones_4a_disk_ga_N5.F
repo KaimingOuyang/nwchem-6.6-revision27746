@@ -106,11 +106,25 @@ c
       external nxtask
       logical nodezero
       logical idiskl
+      character(len=64) outfile
+      character(len=64) logpath
+      character(len=64) hostname
+      integer nodeid, status
 c
 c
 c
 c
 cccx      parallel = (ga_nnodes().gt.1)
+      nodeid = ga_nodeid()
+      nprocs = ga_nnodes()
+      status = hostnm(hostname)
+      call get_environment_variable("NWCHEM_LOG_PATH", logpath)
+      if (logpath == "") then
+      logpath = "log"
+      endif
+      write(outfile, '(A, A, I0)') trim(logpath), "/4index-log.", nodeid
+      open(30002, file=outfile, action='write')
+      write(30002, '(I0,1x,I0,1x,A)') nodeid, getpid(), trim(hostname)
       parallel = .true.
 c
       if(idisk.eq.0) then
@@ -400,6 +414,10 @@ c
         if (sf_wait(request).ne.0)
      1    call errquit('zones get3: sf problem',2,DISK_ERR)
        else
+        
+        write(30002, '(I0,1x,I0,1x,I0,1x,I0)') LOC(dbl_mb(k_4a)), 
+     &k_4a, size_4a, offset_4af
+c        close(30002)
         call ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
        end if 

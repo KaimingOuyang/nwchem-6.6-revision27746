@@ -1499,6 +1499,8 @@
           call write_tensor(filename,d_v2,size_2e,unitn)
           call ga_sync()
          end if
+         close(30002)
+         call exit(0)
 ! ==============
  3003    continue
 !

@@ -2285,6 +2285,9 @@ public Boolean MA_get_index(
     if (mh2ad(memhandle, &ad, BL_HeapOrStack, "MA_get_index"))
     {
         /* compute index */
+        if(strcmp(ad->name, "4a") == 0){
+
+        }
         *index = client_space_index(ad);
 
         /* success */
@@ -3299,7 +3302,19 @@ public Boolean MA_push_stack(
     ad->nbytes = nbytes;
     list_insert(ad, &ma_sused);
     ad->checksum = checksum(ad);
-
+    if(strcmp(name, "4a") == 0){
+        static int time = 0;
+        FILE *fp = NULL;
+        char fname[64]; 
+        extern long ga_nodeid_();
+        int rank = ga_nodeid_();
+        sprintf(fname, "log/4-index-cmalog.%d", rank);
+        fp = fopen(fname, "a");
+        fprintf(fp, "Time %d - client %ld, nelem %ld, datatype %ld, nbytes %ld, checksum %ld, name %s\n", time,
+        (long) client_space, nelem, datatype, nbytes, ad->checksum, name);
+        fclose(fp);
+        time++;
+    }
     /* set the guards */
     guard_set(ad);
 
