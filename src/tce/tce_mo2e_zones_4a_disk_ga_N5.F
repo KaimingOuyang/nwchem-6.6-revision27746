@@ -246,7 +246,7 @@ c
 c ---------------------------
         size_4a = nalength(azone1)*nalength(azone2)*
      1            nalength(azone3)*nalength(azone4)
-        if(.not.ma_push_get(mt_dbl,size_4a,'4a',l_4a,k_4a))
+        if(.not.ma_push_get(mt_dbl,size_4a,'4a_f',l_4a,k_4a))
      1     call errquit('tce_4af_zones1: MA problem',0,MA_ERR)
         call dfill(size_4a, 0.0d0, dbl_mb(k_4a), 1)
          shift_mu = 0
@@ -420,6 +420,10 @@ c
 c        close(30002)
         call ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
+        if(.not.ma_push_get(mt_dbl,8,'aux',l_aux,k_aux))
+     1     call errquit('tce_aux1: MA problem',0,MA_ERR)
+        if (.not.ma_pop_stack(l_aux))
+     1     call errquit('l_aux1',15,MA_ERR)
        end if 
 c
 c

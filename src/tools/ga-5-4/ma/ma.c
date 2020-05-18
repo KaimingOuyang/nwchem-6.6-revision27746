@@ -3593,12 +3593,14 @@ public Boolean MA_verify_allocator_stuff()
     int        bad_stack_checksums;
     int        bad_stack_lguards;
     int        bad_stack_rguards;
-
+    char tmp_buf[128];
 #ifdef STATS
     ma_stats.calls[(int)FID_MA_verify_allocator_stuff]++;
 #endif /* STATS */
-
-    preamble = "MA_verify_allocator_stuff: starting scan ...\n";
+    extern long ga_nodeid_();
+    int rank = ga_nodeid_();
+    sprintf(tmp_buf, "MA_verify_allocator_stuff: starting scan ... rank %d\n", rank);
+    preamble = tmp_buf;
 
     /* check each block on the heap used list */
     list_verify(ma_hused,
