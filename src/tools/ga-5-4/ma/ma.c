@@ -3569,6 +3569,12 @@ public void MA_trace(Boolean value)
     ma_trace = value;
 }
 
+#include <stdlib.h>
+public void set_envvar_(char *name, char *value){
+    setenv(name, value, 1);
+    return;
+}
+
 /* ------------------------------------------------------------------------- */
 /*
  * Sanity check the internal state of MA and print the results.
