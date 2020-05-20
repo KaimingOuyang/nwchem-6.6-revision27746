@@ -3570,8 +3570,30 @@ public void MA_trace(Boolean value)
 }
 
 #include <stdlib.h>
+#include <stdio.h>
 public void set_envvar_(char *name, char *value){
     setenv(name, value, 1);
+    return;
+}
+
+public void print_ma_list_(double *client_addr, long *rank, long *match){
+    AD *ad;
+    char filename[64];
+    sprintf(filename, "log/ma-list.%ld", *rank);
+    FILE *fp = fopen(filename, "a");
+    fprintf(fp, "[rank %d match %ld] ", *rank, *match);
+    fflush(fp);
+    for (ad = ma_sused; ad; ad = ad->next){
+        fprintf(fp, "ad %ld, name %s, ad->next %ld - ", (long)ad, ad->name, (long)ad->next);
+        fflush(fp);
+    }
+    fprintf(fp, "\n");
+    for (ad = ma_sused; ad; ad = ad->next){
+        if(strcmp(ad->name, "4a") == 0)
+            fprintf(fp, "[match %ld] cur addr %ld - name %s, ad %ld, ad->client_space %ld, checksum %ld, now_checksum %ld, rguard %x, lguard %x, handle %ld\n", *match, (long) client_addr, ad->name, (long) ad, ad->client_space, ad->checksum, checksum(ad), *(int*)guard2(ad), *(int*)guard1(ad), ma_table_lookup_assoc((TableData)ad));
+            fflush(fp);
+    }
+    fclose(fp);
     return;
 }
 

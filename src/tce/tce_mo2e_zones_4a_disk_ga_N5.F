@@ -110,8 +110,8 @@ c
       character(len=64) outfile
       character(len=64) logpath
       character(len=64) hostname
-      integer nodeid, status
-      external set_envvar
+      integer nodeid, status, match
+      external set_envvar, print_ma_list
 c
 c
 c
@@ -119,6 +119,7 @@ c
 cccx      parallel = (ga_nnodes().gt.1)
       nodeid = ga_nodeid()
       nprocs = ga_nnodes()
+      match = 0
       status = hostnm(hostname)
       call get_environment_variable("NWCHEM_LOG_PATH", logpath)
       if (logpath == "") then
@@ -417,15 +418,19 @@ c
      1    call errquit('zones get3: sf problem',2,DISK_ERR)
        else
         call set_envvar("NWCHEM_GA_GET"//c_null_char, "1"//c_null_char)
-        write(30002, '(I0,1x,I0,1x,I0,1x,I0)') LOC(dbl_mb(k_4a)), 
-     &k_4a, size_4a, offset_4af
-c        close(30002)
+        write(30002, '("daddr ",I0,1x, "k_4a ", I0,1x, "dsize ", I0, 1x,  
+     &"offset ", I0)') LOC(dbl_mb(k_4a)), k_4a, size_4a, offset_4af
+
+        if(.not.ma_push_get(mt_dbl,32,'aux',l_aux,k_aux))
+     1     call errquit('before ga_get: MA problem',0,MA_ERR)
+
+        call print_ma_list(dbl_mb(k_4a), nodeid, match)
         call ga_get(d_4af,offset_4af+1,offset_4af+size_4a,1,1,
      1    dbl_mb(k_4a),1)
-        if(.not.ma_push_get(mt_dbl,8,'aux',l_aux,k_aux))
-     1     call errquit('after ga_get: MA problem',0,MA_ERR)
+        call print_ma_list(dbl_mb(k_4a), nodeid, match)
+        match = match + 1
         if (.not.ma_pop_stack(l_aux))
-     1     call errquit('l_aux1',15,MA_ERR)
+     1     call errquit('after ga_get',15,MA_ERR)
        end if 
 c
 c
