@@ -212,8 +212,7 @@ dasum_     yasum_
 daxpy_     yaxpy_
 dcopy_     ycopy_        
 ddot_      ydot_         
-dgemm_     ygemm_        
-tpi_dgemm_ tpi_ygemm_    
+dgemm_     ygemm_  
 dgemv_     ygemv_        
 dger_      yger_         
 dnrm2_     ynrm2_        
