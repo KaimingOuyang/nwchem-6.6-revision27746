@@ -9,6 +9,10 @@ LIB_INCLUDES = -I$(MPI_INCLUDE)
 LIB_DEFINES = -DENABLE_TPI_PROFILE
 endif
 
+ifeq ($(BLAS_SIZE),8)
+	LIB_DEFINES += -DUSE_INTEGER8
+endif
+
 HEADERS = 
 
 include ../../config/makefile.h

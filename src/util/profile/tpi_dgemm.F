@@ -1,3 +1,4 @@
+#ifdef USE_INTEGER8
       subroutine tpi_dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,
      &                     c,ldc)
       double precision alpha,beta
@@ -9,7 +10,7 @@
       call tpi_stop_timer(10)
       return
       end
-
+#else
 c     32 bit integer version of dgemm
 c
       subroutine tpi_ygemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,
@@ -23,3 +24,4 @@ c
       call tpi_stop_timer(10)
       return
       end
+#endif
