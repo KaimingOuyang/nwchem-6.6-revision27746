@@ -36,6 +36,7 @@ c
         return
       endif
 c
+      call tpi_config_async("ccsd")
       call tpi_start()
       call tce_diis_init()
       do iter=1,maxiter
@@ -168,6 +169,7 @@ c          write(LuOut,9101) cpusecs(37),cpusecs(38)
           endif
           call tpi_pop_name_level1("ccsd-iteration")
           call tpi_stop()
+          call tpi_config_async_reset()
           return
         endif
         if (save_t(1).and.(mod(iter,save_interval).eq.0)) then
@@ -197,6 +199,7 @@ c          write(LuOut,9101) cpusecs(37),cpusecs(38)
       enddo
       
       call tpi_stop()
+      call tpi_config_async_reset()
 c
           call util_file_name('t1amp',.false.,.true.,filename)
           unitn=79

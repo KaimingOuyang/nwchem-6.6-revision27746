@@ -125,6 +125,7 @@ cccx      max_size_temp=100000000
 c
 c
 c
+      call tpi_config_async("4-index")
       call tpi_start()
       call tpi_push_name_level1("4-index")
 
@@ -1078,6 +1079,7 @@ c
 
       call tpi_pop_name_level1("4-index")
       call tpi_stop()
+      call tpi_config_async_reset()
 c *** debug ***
 c 800  format('DGEMM1 MAX',i5,2x,3f15.5)
 c 801  format('DGEMM2 ',i5,2x,3f15.5)

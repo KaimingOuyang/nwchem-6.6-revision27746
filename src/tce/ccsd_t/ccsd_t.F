@@ -72,6 +72,7 @@ ccx        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
 c -------------------------------
 C
+      call tpi_config_async("ccsd_t")
       call tpi_start()
       call tpi_push_name_level1("ccsd_t")
       
@@ -289,6 +290,7 @@ c - T1/X1 LOCALIZATION ------
 c ---------------------------
       call tpi_pop_name_level1("ccsd_t")
       call tpi_stop()
+      call tpi_config_async_reset()
       
       return
       end

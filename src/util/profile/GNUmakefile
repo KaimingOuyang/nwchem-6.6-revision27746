@@ -1,6 +1,6 @@
 # $Id: GNUmakefile 23746 2013-03-12 18:00:54Z edo $
 #
-OBJ_OPTIMIZE = tpi_ga.o tpi_dgemm.o tpi_nxtask.o tpi_profile.o
+OBJ_OPTIMIZE = tpi_ga.o tpi_dgemm.o tpi_nxtask.o tpi_profile.o tce_config.o
 
 LIBRARY = libnwcutil.a
 
