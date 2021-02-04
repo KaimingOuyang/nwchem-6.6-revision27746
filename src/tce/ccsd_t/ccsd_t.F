@@ -72,9 +72,9 @@ ccx        call tpi_ga_get(d_t1,1,size_t1,1,1,dbl_mb(k_t1_local),1)
       call get_block(d_t1,dbl_mb(k_t1_local),size_t1,0)
 c -------------------------------
 C
-      call tpi_config_async("ccsd_t")
+      call tpi_config_async("ccsd_t"//char(0))
       call tpi_start()
-      call tpi_push_name_level1("ccsd_t")
+      call tpi_push_name_level1("ccsd_t"//char(0))
       
       nprocs = GA_NNODES()
       energy(1)=0.0d0

@@ -1719,6 +1719,8 @@
          call util_flush(LuOut)
         end if
 ! -------------
+
+        call tpi_config_async("ccsd"//char(0))
 #ifdef MIRROR_SING
         call createfile_mirror(filename,d_t1,size_t1)
 #else
@@ -2659,6 +2661,7 @@
      1         k_e_offset,k_f1_offset,k_v2_offset,
      2         k_t1_offset,k_t2_offset,
      3         size_t1,size_t2,ref,corr,rtdb)
+          call tpi_config_async_reset()
 #endif
 ! === jaguar ===
          if(write_ta)  then

@@ -125,9 +125,9 @@ cccx      max_size_temp=100000000
 c
 c
 c
-      call tpi_config_async("4-index")
+      call tpi_config_async("4-index"//char(0))
       call tpi_start()
-      call tpi_push_name_level1("4-index")
+      call tpi_push_name_level1("4-index"//char(0))
 
       do ii=1,1000
        tot_zone(ii)=0
