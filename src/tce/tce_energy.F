@@ -1720,7 +1720,6 @@
         end if
 ! -------------
 
-        call tpi_config_async("ccsd"//char(0))
 #ifdef MIRROR_SING
         call createfile_mirror(filename,d_t1,size_t1)
 #else
@@ -2657,6 +2656,7 @@
      2         k_t1_offset,k_t2_offset,
      3         size_t1,size_t2,ref,corr)
 #else
+          call tpi_config_async("ccsd"//char(0))
           call ccsd_energy_loc(d_e,d_f1,d_v2,d_t1,d_t2,
      1         k_e_offset,k_f1_offset,k_v2_offset,
      2         k_t1_offset,k_t2_offset,
