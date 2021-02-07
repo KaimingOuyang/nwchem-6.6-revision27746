@@ -1063,9 +1063,12 @@
 !
       call tce_filename('f1',filename)
       call tce_mo1e_offset(l_f1_offset,k_f1_offset,size_1e)
+
+      call tpi_config_async("ccsd"//char(0))
       call createfile(filename,d_f1,size_1e)
       if (.not.read_integrals(1)) then
         if (recompf) then
+      call tpi_config_async_reset()
 ! === jaguar ===
       if(read_int)  then
       call util_file_name('f1int',.false.,.true.,filename)
