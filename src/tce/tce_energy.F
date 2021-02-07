@@ -1723,11 +1723,13 @@
         end if
 ! -------------
 
+        call tpi_config_async("ccsd"//char(0))
 #ifdef MIRROR_SING
         call createfile_mirror(filename,d_t1,size_t1)
 #else
         call createfile(filename,d_t1,size_t1)
 #endif
+        call tpi_config_async_reset()
 ! ccsd_act/eomccsd_act
         if(model.eq.'ccsd_act') then
           call ga_zero(d_t1)
